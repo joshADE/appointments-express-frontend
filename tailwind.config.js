@@ -4,8 +4,20 @@ module.exports = {
   // mode: "jit",
   theme: {
     extend: {},
+    fontFamily: {
+      'oswald': ['Oswald', 'ui-sans-serif', 'sans-serif'],
+      'montserrat': ['Montserrat', 'ui-sans-serif', 'sans-serif'],
+      'roboto': ['Roboto', 'ui-sans-serif', 'sans-serif'],
+    },
   },
-  variants: {},
+  variants: {
+    extend: {
+      opacity: ['disabled'],
+      width: ['hover', 'group-hover'],
+      textAlign: ['group-hover'],
+      alignSelf: ['group-hover']
+    }
+  },
   plugins: [],
   purge: {
     // Filenames to scan for classes
