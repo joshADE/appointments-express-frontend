@@ -11,6 +11,7 @@ interface StoreDetailsFormProp {
     clearStoreDetails: () => void;
 }
 
+// default values for this components state
 const defaultStoreInfo: Partial<Store> = {
     location: '',
     isQuickProfile: false,
@@ -50,13 +51,13 @@ const convertArrayHoursToObject = (arrayHours: Partial<StoreHours>[]) => {
     return objectHours;
 }
 
-const convertObjectHoursToArray = (objectHours: {[dayOfWeek:number]:Partial<StoreHours>}) => {
-    const arrayHours : Partial<StoreHours>[] = [];
-     Object.values(objectHours).forEach(entry => {
-        arrayHours.push(entry);
-    }); 
-    return arrayHours;
-}
+// const convertObjectHoursToArray = (objectHours: {[dayOfWeek:number]:Partial<StoreHours>}) => {
+//     const arrayHours : Partial<StoreHours>[] = [];
+//      Object.values(objectHours).forEach(entry => {
+//         arrayHours.push(entry);
+//     }); 
+//     return arrayHours;
+// }
 
 const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
     isQuickProfile,
