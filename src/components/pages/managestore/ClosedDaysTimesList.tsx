@@ -27,6 +27,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                             <div>
                                 <label htmlFor="fromField">From: </label>
                                 <input 
+                                    className="border-b border-black focus:outline-none"
                                     id="fromField" 
                                     type="text"
                                     value={cdt.from}
@@ -35,6 +36,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                             <div>
                                 <label htmlFor="toField">To: </label>
                                 <input 
+                                    className="border-b border-black focus:outline-none"
                                     id="toField" 
                                     type="text"
                                     value={cdt.to}
@@ -63,7 +65,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                     )
                 })}
             </ul>
-            <button className="border w-full border-black">New closed day/time</button>
+            <button type="button" className="border w-full border-black">New closed day/time</button>
         </div>);
 }
 
