@@ -25,7 +25,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
     onChangeRepeat,
     onChangeRepeatInterval
 }) => {
-        return (<div className="">
+        return (<div className="text-xs">
             <ul className="">
                 {closed.map((cdt, index) => {
                     return (
@@ -40,12 +40,12 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                                     onChange={e => onChangeFromOrTo(index, true, moment(e))}
                                     inputProps={{className:"border-b border-black"}}
                                 />
-                                <input 
+                                {/* <input 
                                     className="border-b border-black focus:outline-none"
                                     id="fromField" 
                                     type="text"
                                     value={cdt.from}
-                                />
+                                /> */}
                             </div>
                             <div>
                                 <label htmlFor="toField">To: </label>
@@ -54,12 +54,12 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                                     onChange={e => onChangeFromOrTo(index, false, moment(e))}
                                     inputProps={{className:"border-b border-black"}}
                                 />
-                                <input 
+                                {/* <input 
                                     className="border-b border-black focus:outline-none"
                                     id="toField" 
                                     type="text"
                                     value={cdt.to}
-                                />
+                                /> */}
                             </div>
                             <div>
                                 <label htmlFor="repeatField">Repeat: </label>

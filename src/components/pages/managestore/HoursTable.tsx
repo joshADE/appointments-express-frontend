@@ -34,7 +34,7 @@ const HoursTable: React.FC<HoursTableProps> = ({
         },[])
 
         return (
-        <table className="font-roboto text-sm font-normal table-auto border-collapse" ref={tableRef}>
+        <table className="font-roboto text-xs font-normal table-auto border-collapse" ref={tableRef}>
             <thead>
                 <tr>
                     <th className="border border-gray-300" key="-1">{' '}</th>

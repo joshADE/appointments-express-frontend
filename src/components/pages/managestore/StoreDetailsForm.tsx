@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { StoreWithDetails, Store, StoreHours, ClosedDaysTimes, RepeatInterval } from '../../../features/store/storeTypes'
+import { StoreWithDetails, Store, StoreHours, ClosedDaysTimes, RepeatInterval, CreateStoreRequest } from '../../../features/store/storeTypes'
+import { useAppDispatch } from "../../../app/hooks";
+import {
+    createUserStore
+  } from "../../../features/store/storeSlice";
 import HoursTable from './HoursTable';
 import InfoForm from './InfoForm';
 import moment from 'moment';
@@ -51,13 +55,13 @@ const convertArrayHoursToObject = (arrayHours: Partial<StoreHours>[]) => {
     return objectHours;
 }
 
-// const convertObjectHoursToArray = (objectHours: {[dayOfWeek:number]:Partial<StoreHours>}) => {
-//     const arrayHours : Partial<StoreHours>[] = [];
-//      Object.values(objectHours).forEach(entry => {
-//         arrayHours.push(entry);
-//     }); 
-//     return arrayHours;
-// }
+const convertObjectHoursToArray = (objectHours: {[dayOfWeek:number]:Partial<StoreHours>}) => {
+    const arrayHours : Partial<StoreHours>[] = [];
+     Object.values(objectHours).forEach(entry => {
+        arrayHours.push(entry);
+    }); 
+    return arrayHours;
+}
 
 const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
     isQuickProfile,
@@ -68,6 +72,8 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
     const [hours, setHours] = useState(storeDetails?convertArrayHoursToObject(storeDetails.storeHours):convertArrayHoursToObject(defaultStoreHours));
     // closed = closed days and times
     const [closed, setClosed] = useState(storeDetails?storeDetails.closedDaysTimes:defaultClosed)
+    const [submitButton, setSubmitButton] = useState('');
+    const dispatch = useAppDispatch();
     useEffect(() => {
         if (storeDetails){
             setInfo(storeDetails.store);
@@ -80,6 +86,26 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
         }
     }, [storeDetails])
 
+    // functions to send updated data to the server
+    const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        alert(submitButton);
+        if (submitButton === 'createstore'){
+            const requestObject : CreateStoreRequest = { store: info, storeHours: convertObjectHoursToArray(hours), closedDaysTimes: closed };
+            
+            requestObject.store.isQuickProfile = isQuickProfile;
+            
+            dispatch(
+            createUserStore(
+                requestObject,
+                () => { window.alert("Successfully added store"); clearStoreDetails(); },
+                () => window.alert("Failed to add store")
+            )
+            );
+        }
+
+
+    }
     // callbacks to changes the hours state
     const onIncrementOrDecrement = useCallback((dayOfWeek: number, isOpenTime: boolean, amount: number) => {
         if (isOpenTime)
@@ -139,15 +165,14 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
         }))
     }, []);
     return (
-        <div className="font-roboto h-full flex pb-5">
+        <div className="font-roboto h-full pb-5">
+            <form className="w-full h-full flex" onSubmit={handleSubmit}>
             <div className="w-3/4 h-full">
                 <h3 className="font-bold text-2xl border-b-2 border-gray-900">{isQuickProfile ? (storeDetails ? "Quick Profile" : "Create Quick Profile") : (storeDetails ? "Edit " + storeDetails.store.name : "Create new store")}</h3>
                 <div className="h-full flex flex-col md:flex-row md:flex-wrap overflow-auto">
                     <div className="md:w-56 mr-4 relative">
                         <h4 className="font-bold text-lg border-b border-gray-900">Details</h4>
-                        <form
-
-                        >
+                        <div>
                             <InfoForm 
                                 id="name"
                                 label="Name"
@@ -155,7 +180,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                                 type="text"
                                 value={info.name}
                                 onChange={e => setInfo({...info, name: e.target.value})}
-                                isChecked
+                                isRequired
                             />
                             <InfoForm 
                                 id="location"
@@ -164,7 +189,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                                 type="text"
                                 value={info.location}
                                 onChange={e => setInfo({...info, location: e.target.value})}
-                                isChecked
+                                isRequired
                             />
                             <InfoForm 
                                 id="minTimeBlock"
@@ -173,7 +198,6 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                                 type="select"
                                 value={info.minTimeBlock}
                                 onChange={e => { if (info.maxTimeBlock && +e.target.value > info.maxTimeBlock) setInfo({...info, minTimeBlock: +e.target.value, maxTimeBlock: +e.target.value}); else setInfo({...info, minTimeBlock: +e.target.value})}}
-                                isChecked
                                 options={timeBlockOptions}
                             />
                             <InfoForm 
@@ -183,53 +207,57 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                                 type="select"
                                 value={info.maxTimeBlock}
                                 onChange={e => { if(info.minTimeBlock && +e.target.value >= info.minTimeBlock) setInfo({...info, maxTimeBlock: +e.target.value}); else alert('Max time block cannot be less than min time block')}}
-                                isChecked
                                 options={timeBlockOptions}
                             />
                         
-                        </form>
+                        </div>
+                        {(storeDetails?.store.id !== undefined) && ((storeDetails.role.name === 'Owner') ?
+                        <button
+                            type="submit"
+                            className="font-bold text-sm p-1 text-gray-700 bg-gray-300"
+                            onClick={() => setSubmitButton('editinfo')}
+                        >Save</button>: <div className="text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500">Must be owner to edit the details</div>)}
                     </div>
                     <div className="md:w-max mr-4 relative">
                         <h4 className="font-bold text-lg border-b border-gray-900">Hours</h4>
                         
-                        <form
-
-                        >
+                        <div>
                             <HoursTable 
                                 hours={hours}
                                 onIncrementOrDecrement={onIncrementOrDecrement}
                                 onChangeOpenOrClose={onChangeOpenOrClose}
                             />
-                        </form>
+                        </div>
                     </div>
                     <div className="md:w-max mr-4 relative">
                         <h4 className="font-bold text-lg border-b border-gray-900 truncate">Closed Days / Times</h4>
                          
-                        <form
-
-                        >
+                        <div>
                             <ClosedDaysTimesList 
                                 closed={closed}
                                 onChangeFromOrTo={onChangeFromOrTo}
                                 onChangeRepeat={onChangeRepeat}
                                 onChangeRepeatInterval={onChangeRepeatInterval}
                             />
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
             <div className="w-1/4 h-full flex flex-col justify-center items-center">
                 {(!isQuickProfile && storeDetails) && 
                 <button
+                    type="button"
                     className="font-bold text-sm p-1 text-gray-700 bg-gray-300"
                     onClick={clearStoreDetails}
                 >Stop Editing</button>}
-                {(info.id === undefined) && 
+                {(storeDetails?.store.id === undefined) && 
                 <button
-                className="font-bold text-sm p-1 text-gray-700 bg-gray-300"
-                // onClick={clearStoreDetails}
+                    type="submit"
+                    className="font-bold text-sm p-1 text-gray-700 bg-gray-300"
+                    onClick={() => setSubmitButton('createstore')}
                 >Create {isQuickProfile && 'Quick Profile'}</button>}
             </div>
+            </form>
         </div>
     )
 }

@@ -8,7 +8,8 @@ interface InfoFormProps {
     value: any;
     onChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void;
     options?: {label:string; value: any}[];
-    isChecked: boolean;
+    isChecked?: boolean;
+    isRequired?: boolean;
 }
 
 const InfoForm: React.FC<InfoFormProps> = ({
@@ -19,7 +20,8 @@ const InfoForm: React.FC<InfoFormProps> = ({
     value,
     onChange,
     options,
-    isChecked
+    isChecked,
+    isRequired
 }) => {
     return (
         <div className="pt-5 text-xs">
@@ -32,6 +34,7 @@ const InfoForm: React.FC<InfoFormProps> = ({
                 type={type}
                 value={value}
                 onChange={onChange}
+                required={isRequired}
             />}
             {(type === 'select') &&
             <select
