@@ -1,8 +1,14 @@
-import React from 'react'
+import React, { memo } from 'react'
+import Datetime from 'react-datetime'
+import 'react-datetime/css/react-datetime.css';
+import moment from 'moment';
 import { ClosedDaysTimes, RepeatInterval } from '../../../features/store/storeTypes';
 
 interface ClosedDaysTimesListProps {
     closed: Partial<ClosedDaysTimes>[];
+    onChangeFromOrTo: (index: number, isFrom: boolean, newVale: moment.Moment) => void;
+    onChangeRepeat: (index: number, newValue: boolean) => void;
+    onChangeRepeatInterval: (index: number, newValue: number) => void;
 }
 
 const intervals : { [label: string]: RepeatInterval } = {
@@ -14,10 +20,13 @@ const intervals : { [label: string]: RepeatInterval } = {
 
 
 const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
-    closed
+    closed,
+    onChangeFromOrTo,
+    onChangeRepeat,
+    onChangeRepeatInterval
 }) => {
         return (<div className="">
-            <ul className="overflow-y-auto ">
+            <ul className="">
                 {closed.map((cdt, index) => {
                     return (
                         <li
@@ -26,6 +35,11 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                         >
                             <div>
                                 <label htmlFor="fromField">From: </label>
+                                <Datetime 
+                                    value={moment(cdt.from,'YYYY-MM-DD[T]HH:mm:ss')}
+                                    onChange={e => onChangeFromOrTo(index, true, moment(e))}
+                                    inputProps={{className:"border-b border-black"}}
+                                />
                                 <input 
                                     className="border-b border-black focus:outline-none"
                                     id="fromField" 
@@ -35,6 +49,11 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                             </div>
                             <div>
                                 <label htmlFor="toField">To: </label>
+                                <Datetime 
+                                    value={moment(cdt.to,'YYYY-MM-DD[T]HH:mm:ss')}
+                                    onChange={e => onChangeFromOrTo(index, false, moment(e))}
+                                    inputProps={{className:"border-b border-black"}}
+                                />
                                 <input 
                                     className="border-b border-black focus:outline-none"
                                     id="toField" 
@@ -48,6 +67,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                                     id="repeatField" 
                                     type="checkbox"
                                     checked={cdt.repeat}
+                                    onChange={e => onChangeRepeat(index, e.target.checked)}
                                 />
                             </div>
                             <div>
@@ -56,6 +76,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                                     id="intervalField"
                                     value={cdt.repeatInterval}
                                     disabled={!cdt.repeat}
+                                    onChange={e => onChangeRepeatInterval(index, +e.target.value)}
                                     className="border-b border-black"
                                 >
                                     {Object.entries(intervals).map(interval => <option key={interval[1]} value={interval[1]}>{interval[0]}</option>)}
@@ -69,4 +90,4 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
         </div>);
 }
 
-export default ClosedDaysTimesList
+export default memo(ClosedDaysTimesList)

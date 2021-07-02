@@ -80,6 +80,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
         }
     }, [storeDetails])
 
+    // callbacks to changes the hours state
     const onIncrementOrDecrement = useCallback((dayOfWeek: number, isOpenTime: boolean, amount: number) => {
         if (isOpenTime)
             setHours(currentHours => 
@@ -102,6 +103,41 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
             );
         }
     }, [hours]);
+
+    // callbacks to change the closed days and time state (closed)
+    const onChangeFromOrTo = useCallback((index: number, isFrom: boolean, newVale: moment.Moment) => {
+        setClosed(closed => closed.map((cdt, i) => {
+            if (i === index){
+                if (isFrom){
+                    return {...cdt, from: newVale.format("YYYY-MM-DD[T]HH:mm:ss") };
+                } else {
+                    return {...cdt, to: newVale.format("YYYY-MM-DD[T]HH:mm:ss") };
+                }
+            }else{
+                return cdt;
+            }
+        }))
+    }, []);
+
+    const onChangeRepeat = useCallback((index: number, newValue: boolean) => {
+        setClosed(closed => closed.map((cdt, i) => {
+            if (i === index){
+                return {...cdt, repeat: newValue };
+            }else{
+                return cdt;
+            }
+        }))
+    }, []);
+
+    const onChangeRepeatInterval = useCallback((index: number, newValue: number) => {
+        setClosed(closed => closed.map((cdt, i) => {
+            if (i === index){
+                return {...cdt, repeatInterval: newValue };
+            }else{
+                return cdt;
+            }
+        }))
+    }, []);
     return (
         <div className="font-roboto h-full flex pb-5">
             <div className="w-3/4 h-full">
@@ -109,7 +145,6 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                 <div className="h-full flex flex-col md:flex-row md:flex-wrap overflow-auto">
                     <div className="md:w-56 mr-4 relative">
                         <h4 className="font-bold text-lg border-b border-gray-900">Details</h4>
-                        {(!isQuickProfile || storeDetails) ? 
                         <form
 
                         >
@@ -152,15 +187,11 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                                 options={timeBlockOptions}
                             />
                         
-                        </form> :
-                        <div className="h-1/2 top-1/4 text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500">
-                            You must click create first
-                        </div>
-                        }
+                        </form>
                     </div>
                     <div className="md:w-max mr-4 relative">
                         <h4 className="font-bold text-lg border-b border-gray-900">Hours</h4>
-                        {(!isQuickProfile || storeDetails) ? 
+                        
                         <form
 
                         >
@@ -169,26 +200,21 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                                 onIncrementOrDecrement={onIncrementOrDecrement}
                                 onChangeOpenOrClose={onChangeOpenOrClose}
                             />
-                        </form> :
-                        <div className="h-1/2 top-1/4 text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500">
-                            You must click create first
-                        </div>
-                        }
+                        </form>
                     </div>
                     <div className="md:w-max mr-4 relative">
                         <h4 className="font-bold text-lg border-b border-gray-900 truncate">Closed Days / Times</h4>
-                        {(!isQuickProfile || storeDetails) ? 
+                         
                         <form
 
                         >
                             <ClosedDaysTimesList 
                                 closed={closed}
+                                onChangeFromOrTo={onChangeFromOrTo}
+                                onChangeRepeat={onChangeRepeat}
+                                onChangeRepeatInterval={onChangeRepeatInterval}
                             />
-                        </form> :
-                        <div className="h-1/2 top-1/4 text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500">
-                            You must click create first
-                        </div>
-                        }
+                        </form>
                     </div>
                 </div>
             </div>
@@ -198,6 +224,11 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                     className="font-bold text-sm p-1 text-gray-700 bg-gray-300"
                     onClick={clearStoreDetails}
                 >Stop Editing</button>}
+                {(info.id === undefined) && 
+                <button
+                className="font-bold text-sm p-1 text-gray-700 bg-gray-300"
+                // onClick={clearStoreDetails}
+                >Create {isQuickProfile && 'Quick Profile'}</button>}
             </div>
         </div>
     )
