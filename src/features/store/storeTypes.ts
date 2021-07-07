@@ -50,3 +50,9 @@ export interface CreateStoreRequest {
     storeHours: Partial<StoreHours>[];
     closedDaysTimes: Partial<ClosedDaysTimes>[];
 }
+
+export interface UpdateClosedRequest {
+    toAdd: Partial<ClosedDaysTimes>[];
+    toUpdate: Partial<ClosedDaysTimes>[];
+    toRemove: Partial<ClosedDaysTimes>[];
+}

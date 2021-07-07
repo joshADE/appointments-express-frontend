@@ -4,7 +4,7 @@ import { converObjectToReplaceJsonPatch } from '../commonTypes'
 import { getErrors } from '../error/errorSlice'
 import { getConfig, getTokenFromUserState } from '../user/userSlice'
 import { storeAPI } from './storeAPI'
-import { CreateStoreRequest, Store, StoreHours, StoreWithDetails } from './storeTypes'
+import { CreateStoreRequest, Store, StoreHours, StoreWithDetails, UpdateClosedRequest } from './storeTypes'
 
 
 interface StoreState {
@@ -126,6 +126,28 @@ export const editUserStoreHours = (id: number, payload: Partial<StoreHours>[], o
         msg: err.response.data,
         status: err.response.status,
         id: 'EDIT_STORE_HOURS_FAIL'
+      }));
+    }
+    dispatch(loadingFailed());
+    onFailure();
+  }
+}
+
+export const editUserStoreClosed = (id: number, payload: UpdateClosedRequest, onSuccess: Function, onFailure: Function) : ThunkAction<void, RootState, unknown, AnyAction> => async (dispatch, getState)  => {
+  try {
+    dispatch(storeLoading());
+
+    const storeRes = await storeAPI.stores().editStoreClosedDaysAndTimes(id, payload, getConfig(getTokenFromUserState(getState)));
+    dispatch(editStore(storeRes.data));
+    
+    onSuccess();
+  }catch(err){
+    console.log(err);
+    if (err.response){
+      dispatch(getErrors({
+        msg: err.response.data,
+        status: err.response.status,
+        id: 'EDIT_STORE_CLOSED_DAYS_AND_TIMES_FAIL'
       }));
     }
     dispatch(loadingFailed());

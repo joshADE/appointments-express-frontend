@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { StoreWithDetails, Store, StoreHours, ClosedDaysTimes, RepeatInterval, CreateStoreRequest } from '../../../features/store/storeTypes'
+import { StoreWithDetails, Store, StoreHours, ClosedDaysTimes, RepeatInterval, CreateStoreRequest, UpdateClosedRequest } from '../../../features/store/storeTypes'
 import { useAppDispatch } from "../../../app/hooks";
 import {
     createUserStore,
     editUserStoreInfo,
-    editUserStoreHours
+    editUserStoreHours,
+    editUserStoreClosed
   } from "../../../features/store/storeSlice";
 import HoursTable from './HoursTable';
 import InfoForm from './InfoForm';
@@ -125,6 +126,22 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
             const arrayHours = convertObjectHoursToArray(hours);
             if (arrayHours.every(times => times.storeId === info.id))
                 dispatch(editUserStoreHours(info.id, arrayHours, () => alert("success"), () => alert("failure")));
+        }
+
+        if (submitButton === 'editclosed' && info.id){
+            const toAdd = closed.filter(cdt => cdt.id === undefined);
+            const toUpdate = closed.filter(cdt => cdt.id !== undefined);
+            const closedRequest : UpdateClosedRequest = {toAdd, toUpdate, toRemove: deletedClosed}
+
+            
+            dispatch(
+              editUserStoreClosed(
+                info.id,
+                closedRequest,
+                () => { setDeletedClosed([]); alert("success")},
+                () => alert("failure")
+              )
+            );
         }
 
 
@@ -278,7 +295,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                     <div className="md:w-max mr-4 relative">
                         <h4 className="font-bold text-lg border-b border-gray-900 truncate">Closed Days / Times</h4>
                          
-                        <div>
+                        <div className="flex items-start">
                             <ClosedDaysTimesList 
                                 closed={closed}
                                 onChangeFromOrTo={onChangeFromOrTo}
@@ -287,6 +304,12 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                                 addClosed={addClosed}
                                 deleteClosed={deleteClosed}
                             />
+                            {(storeDetails?.store.id !== undefined) &&
+                            <button
+                                type="submit"
+                                className="font-bold text-sm p-1 text-gray-700 bg-gray-300"
+                                onClick={() => setSubmitButton('editclosed')}
+                            >Save</button>}
                         </div>
                     </div>
                 </div>
