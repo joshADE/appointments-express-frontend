@@ -41,13 +41,6 @@ const defaultClosed: Partial<ClosedDaysTimes>[] = [
     { from: moment(new Date(2021, 5, 28, 11, 0,0)).format("YYYY-MM-DD[T]HH:mm:ss"), to: moment(new Date(2021, 5, 28, 11, 0,0)).add(2, 'hours').format("YYYY-MM-DD[T]HH:mm:ss"), repeat: false, repeatInterval: RepeatInterval.everyDayOfWeek }
 ]
 
-const timeBlockOptions = [
-    {label:'5', value: 5}, 
-    {label:'10', value: 10}, 
-    {label:'15', value: 15}, 
-    {label:'30', value: 30}, 
-    {label:'60', value: 60}
-]
 
 const convertArrayHoursToObject = (arrayHours: Partial<StoreHours>[]) => {
     const objectHours : {[dayOfWeek:number]:Partial<StoreHours>} = {};
@@ -146,6 +139,14 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
 
 
     }
+
+
+    // callbacks to change the info state
+
+    const onChangeInfoPropertyByName = useCallback((property: keyof typeof info, newValue: string | number) => {
+        setInfo(currentInfo => ({...currentInfo, [property]: newValue}));
+    }, []);
+
     // callbacks to changes the hours state
     const onIncrementOrDecrement = useCallback((dayOfWeek: number, isOpenTime: boolean, amount: number) => {
         if (isOpenTime)
@@ -163,12 +164,12 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
     },[]);
 
     const onChangeOpenOrClose = useCallback((dayOfWeek: number, value: boolean) => {
-        if (hours[dayOfWeek] && hours[dayOfWeek].isOpen !== undefined){
-            setHours(
-                {...hours, [dayOfWeek]:{...hours[dayOfWeek],isOpen: value}}
-            );
-        }
-    }, [hours]);
+        setHours(currentHours =>
+            currentHours[dayOfWeek] && currentHours[dayOfWeek].isOpen !== undefined ?
+            ({...currentHours, [dayOfWeek]:{...currentHours[dayOfWeek],isOpen: value}}):
+            currentHours
+        );
+    }, []);
 
     // callbacks to change the closed days and time state (closed)
     const onChangeFromOrTo = useCallback((index: number, isFrom: boolean, newVale: moment.Moment) => {
@@ -231,42 +232,9 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                         <h4 className="font-bold text-lg border-b border-gray-900">Details</h4>
                         <div>
                             <InfoForm 
-                                id="name"
-                                label="Name"
-                                name="name"
-                                type="text"
-                                value={info.name}
-                                onChange={e => setInfo({...info, name: e.target.value})}
-                                isRequired
+                                info={info}
+                                onChangeInfoPropertyByName={onChangeInfoPropertyByName}
                             />
-                            <InfoForm 
-                                id="location"
-                                label="Location"
-                                name="location"
-                                type="text"
-                                value={info.location}
-                                onChange={e => setInfo({...info, location: e.target.value})}
-                                isRequired
-                            />
-                            <InfoForm 
-                                id="minTimeBlock"
-                                label="Min. Time Block"
-                                name="minTimeBlock"
-                                type="select"
-                                value={info.minTimeBlock}
-                                onChange={e => { if (info.maxTimeBlock && +e.target.value > info.maxTimeBlock) setInfo({...info, minTimeBlock: +e.target.value, maxTimeBlock: +e.target.value}); else setInfo({...info, minTimeBlock: +e.target.value})}}
-                                options={timeBlockOptions}
-                            />
-                            <InfoForm 
-                                id="maxTimeBlock"
-                                label="Max. Time Block"
-                                name="maxTimeBlock"
-                                type="select"
-                                value={info.maxTimeBlock}
-                                onChange={e => { if(info.minTimeBlock && +e.target.value >= info.minTimeBlock) setInfo({...info, maxTimeBlock: +e.target.value}); else alert('Max time block cannot be less than min time block')}}
-                                options={timeBlockOptions}
-                            />
-                        
                         </div>
                         {(storeDetails?.store.id !== undefined) && ((storeDetails.role.name === 'Owner') ?
                         <button
