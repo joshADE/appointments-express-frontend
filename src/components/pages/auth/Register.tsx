@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import useForm from '../../../hooks/useForm';
 import { register, selectUserState } from '../../../features/user/userSlice'
-import ErrorNotice from './ErrorNotice';
+import ErrorNotice from '../../shared/ErrorNotice';
 import { css } from '@emotion/react';
 
 interface RegisterProps {
@@ -103,7 +103,6 @@ const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
             {errors.firstName && (
               <ErrorNotice
                 message={errors.firstName}
-                clearError={() => setErrors({ ...errors, firstName: "" })}
               />
             )}
           </div>
@@ -120,7 +119,6 @@ const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
             {errors.lastName && (
               <ErrorNotice
                 message={errors.lastName}
-                clearError={() => setErrors({ ...errors, lastName: "" })}
               />
             )}
           </div>
@@ -137,7 +135,6 @@ const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
             {errors.username && (
               <ErrorNotice
                 message={errors.username}
-                clearError={() => setErrors({ ...errors, username: "" })}
               />
             )}
           </div>
@@ -154,7 +151,6 @@ const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
             {errors.password && (
               <ErrorNotice
                 message={errors.password}
-                clearError={() => setErrors({ ...errors, password: "" })}
               />
             )}
           </div>
@@ -182,7 +178,6 @@ const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
             {errors.email && (
               <ErrorNotice
                 message={errors.email}
-                clearError={() => setErrors({ ...errors, email: "" })}
               />
             )}
           </div>
