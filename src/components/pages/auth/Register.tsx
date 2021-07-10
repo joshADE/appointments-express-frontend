@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { PuffLoader } from 'react-spinners';
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import useForm from '../../../hooks/useForm';
 import { register, selectUserState } from '../../../features/user/userSlice'
-import ErrorNotice from '../../shared/ErrorNotice';
+import { UserRegisterData } from '../../../features/user/userTypes'
 import { css } from '@emotion/react';
+import { Left } from './Left';
+import { Formik, Form } from 'formik';
+import * as yup from 'yup';
+import { FormTextInput } from "../../shared/FormElements";
+import { Button } from "../../shared/Button";
 
 interface RegisterProps {
   isAuthenticated: boolean;
@@ -17,6 +21,7 @@ const initialValues = {
     lastName: '',
     username: '',
     password: '',
+    passwordConfirm: '',
     email: ''
 }
 
@@ -27,7 +32,6 @@ const override = css`
 
 const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
     const { allUsers } = useAppSelector(selectUserState);
-    const [passwordConfirm, setPasswordConfirm] = useState('');
 
     const history = useHistory();
     const dispatch = useAppDispatch();
@@ -45,155 +49,120 @@ const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
 
 
 
-    const validate : (fieldValues: typeof initialValues) => boolean | undefined = (fieldValues = values) => {
-        let temp = {} as typeof initialValues;
-        if ('username' in fieldValues)
-            temp.username = allUsers.every(user => user.username !== fieldValues.username) ? "" : "Username already taken";
-        if ('email' in fieldValues)
-            temp.email = allUsers.every(user => user.email !== fieldValues.email) ? "" : "Email already taken";
-        if ('password' in fieldValues)
-            temp.password = passwordConfirm === fieldValues.password ? "" : "Passwords do not match";
-        setErrors({
-            ...temp
-        })
-        if (fieldValues === values)
-            return Object.values(temp).every(x => x === "");
-    }
-
-    const {
-        values, 
-        setValues,
-        errors,
-        setErrors,
-        handleInputChange
-    } = useForm(initialValues, validate);
-
-
-    const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        if (validate(values)) {
-          dispatch(
-            register(
-              values,
-              () => {
-                setValues(initialValues);
-                history.push("/dashboard");
-              },
-              () => window.alert("Failed to register")
-            )
-          );
-        }
-    } 
 
     return (
-      <div>
-        <h1>Register for an account</h1>
-        <form className="" autoComplete="off" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="firstName">First Name:</label>
-            <input
-              type="text"
-              name="firstName"
-              id="firstName"
-              onChange={handleInputChange}
-              required
-              value={values.firstName}
-            />
-            {errors.firstName && (
-              <ErrorNotice
-                message={errors.firstName}
-              />
-            )}
-          </div>
-          <div>
-            <label htmlFor="lastName">Last Name:</label>
-            <input
-              type="text"
-              name="lastName"
-              id="lastName"
-              onChange={handleInputChange}
-              required
-              value={values.lastName}
-            />
-            {errors.lastName && (
-              <ErrorNotice
-                message={errors.lastName}
-              />
-            )}
-          </div>
-          <div>
-            <label htmlFor="username">Username:</label>
-            <input
-              type="text"
-              name="username"
-              id="username"
-              onChange={handleInputChange}
-              required
-              value={values.username}
-            />
-            {errors.username && (
-              <ErrorNotice
-                message={errors.username}
-              />
-            )}
-          </div>
-          <div>
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              onChange={handleInputChange}
-              required
-              value={values.password}
-            />
-            {errors.password && (
-              <ErrorNotice
-                message={errors.password}
-              />
-            )}
-          </div>
-          <div>
-            <label htmlFor="passwordConfirm">Confirm Password:</label>
-            <input
-              type="password"
-              name="passwordConfirm"
-              id="passwordConfirm"
-              onChange={(e) => setPasswordConfirm(e.target.value)}
-              required
-              value={passwordConfirm}
-            />
-          </div>
-          <div>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              onChange={handleInputChange}
-              required
-              value={values.email}
-            />
-            {errors.email && (
-              <ErrorNotice
-                message={errors.email}
-              />
-            )}
-          </div>
-
-          <button
-            className="border-2 rounded-md px-3 py-1 text-white bg-green-500 hover:bg-green-900 disabled:opacity-50"
-            type="submit"
-            disabled={isLoading}
+      <section className="w-screen h-screen overflow-auto flex flex-col lg:flex-row">
+        <Left />
+        <div className="w-full lg:w-1/2 h-3/4 lg:h-full p-10 font-roboto lg:overflow-auto">
+          <h1 className="text-center font-oswald text-4xl mb-10">Register</h1>
+          <p className="text-sm text-center text-gray-500 mb-10">
+            Already have an account?{" "}
+            <Link to="/login" className="text-green-600">
+              Login
+            </Link>
+          </p>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={yup.object({
+              firstName: yup
+                .string()
+                .required("first name is required")
+                .min(2, "first name must be at least 2 characters"),
+              lastName: yup
+                .string()
+                .required("last name is required")
+                .min(2, "last name must be at least 2 characters"),
+              username: yup
+                .string()
+                .required()
+                .min(2)
+                .not(
+                  allUsers.map((u) => u.username),
+                  "username is already taken"
+                ),
+              password: yup.string().required().min(6),
+              passwordConfirm: yup
+                .string()
+                .oneOf([yup.ref("password"), null], "passwords must match"),
+              email: yup
+                .string()
+                .email()
+                .required()
+                .not(
+                  allUsers.map((u) => u.email),
+                  "email is already taken"
+                ),
+            })}
+            onSubmit={(values, actions) => {
+              const { email, firstName, lastName, password, username } = values;
+              const payload: UserRegisterData = {
+                email,
+                firstName,
+                lastName,
+                password,
+                username,
+              };
+              dispatch(
+                register(
+                  payload,
+                  () => {
+                    actions.resetForm();
+                    history.push("/dashboard");
+                  },
+                  () => window.alert("Failed to register")
+                )
+              );
+            }}
           >
-            <span
-                className="mr-2"
-            >Register</span>
-            <PuffLoader color="#ffffff" loading={isLoading} size="20px" css={override} />
-          </button>
-        </form>
-      </div>
+            <Form>
+              <FormTextInput
+                label="First Name"
+                props={{ name: "firstName", type: "text", placeholder: "John" }}
+              />
+              <FormTextInput
+                label="Last Name"
+                props={{ name: "lastName", type: "text", placeholder: "Doe" }}
+              />
+              <FormTextInput
+                label="Username"
+                props={{ name: "username", type: "text", placeholder: "jdoe" }}
+              />
+              <FormTextInput
+                label="Password"
+                props={{ name: "password", type: "password" }}
+              />
+              <FormTextInput
+                label="Confirm Password"
+                props={{ name: "passwordConfirm", type: "password" }}
+              />
+              <FormTextInput
+                label="Email"
+                props={{
+                  name: "email",
+                  type: "email",
+                  placeholder: "jdoe@email.com",
+                }}
+              />
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="mx-auto block"
+              >
+                <div className="flex justify-center items-center">
+                  <span className="mr-2">Register</span>
+                  <PuffLoader
+                    color="#369952"
+                    loading={isLoading}
+                    size="24px"
+                    css={override}
+                  />
+                </div>
+              </Button>
+            </Form>
+          </Formik>
+        </div>
+      </section>
     );
 }
 
