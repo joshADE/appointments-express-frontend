@@ -11,6 +11,7 @@ import HoursTable from './HoursTable';
 import InfoForm from './InfoForm';
 import moment from 'moment';
 import ClosedDaysTimesList from './ClosedDaysTimesList';
+import { Button } from '../../shared/Button';
 
 interface StoreDetailsFormProp {
     isQuickProfile: boolean;
@@ -284,17 +285,17 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
             </div>
             <div className="w-1/4 h-full flex flex-col justify-center items-center">
                 {(!isQuickProfile && storeDetails) && 
-                <button
+                <Button
                     type="button"
-                    className="font-bold text-sm p-1 text-gray-700 bg-gray-300"
+                    className="h-12"
                     onClick={clearStoreDetails}
-                >Stop Editing</button>}
+                >Stop Editing</Button>}
                 {(storeDetails?.store.id === undefined) && 
-                <button
+                <Button
                     type="submit"
-                    className="font-bold text-sm p-1 text-gray-700 bg-gray-300"
+                    className="h-12"
                     onClick={() => setSubmitButton('createstore')}
-                >Create {isQuickProfile && 'Quick Profile'}</button>}
+                >Create {isQuickProfile && 'Quick Profile'}</Button>}
             </div>
             </form>
         </div>

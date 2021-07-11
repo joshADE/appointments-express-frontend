@@ -16,10 +16,7 @@ const ManageStore: React.FC = () => {
   const [selectedStore, setSelectedStore] = useState<StoreWithDetails | undefined>()
 
   let indexOfQuickProfile = stores.findIndex(storeWithDetail => storeWithDetail.store.isQuickProfile);
-  let quickProfile : StoreWithDetails | undefined = undefined;
-  if (indexOfQuickProfile >= 0) {
-    quickProfile = stores.splice(indexOfQuickProfile, 1)[0];
-  }
+  const storesWithoutQP = stores.filter((_, i) => i !== indexOfQuickProfile);
 
   const clearStoreDetails = () => {
     setSelectedStore(undefined);
@@ -39,7 +36,7 @@ const ManageStore: React.FC = () => {
       <div className="md:col-span-3">
         <StoreDetailsForm
           isQuickProfile
-          storeDetails={quickProfile}
+          storeDetails={stores[indexOfQuickProfile]}
           clearStoreDetails={clearStoreDetails}
         />
       </div>
@@ -48,14 +45,14 @@ const ManageStore: React.FC = () => {
           <div className="font-thin border-b-4 border-black pb-4 mb-4">
             <h3 className="text-lg">Stores</h3>
             <div className="text-xs text-gray-400">
-              {stores.length} Total -{" "}
-              {new Set(stores.map((store) => store.store.location)).size} Unique
+              {storesWithoutQP.length} Total -{" "}
+              {new Set(storesWithoutQP.map((store) => store.store.location)).size} Unique
               Location(s)
             </div>
             <div className="text-xs text-gray-400">Select the store to edit</div>
           </div>
           <ul>
-            {stores.map((storeDetails) => {
+            {storesWithoutQP.map((storeDetails) => {
               const { store, role } = storeDetails;
               return (
                 <li
