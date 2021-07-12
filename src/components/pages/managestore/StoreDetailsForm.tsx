@@ -12,11 +12,14 @@ import InfoForm from './InfoForm';
 import moment from 'moment';
 import ClosedDaysTimesList from './ClosedDaysTimesList';
 import { Button } from '../../shared/Button';
+import { Overrides } from './ManageStore';
 
 interface StoreDetailsFormProp {
     isQuickProfile: boolean;
     storeDetails?: StoreWithDetails;
     clearStoreDetails: () => void;
+    tranferOverrides: (newOverrides: Overrides) => void;
+    overrides?: Overrides; 
 }
 
 // default values for this components state
@@ -59,11 +62,25 @@ const convertObjectHoursToArray = (objectHours: {[dayOfWeek:number]:Partial<Stor
     }); 
     return arrayHours;
 }
+export type OverridePropertiesKeys = keyof Omit<Store, 'id' | 'createdAt' | 'isQuickProfile'> | 'hours' | 'closed';
+export type OverrideProperties = Record<OverridePropertiesKeys, boolean>
+
+
+const initialOverrides : OverrideProperties = {
+    name: false,
+    location: false,
+    minTimeBlock: false,
+    maxTimeBlock: false,
+    hours: false,
+    closed: false
+}; 
 
 const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
     isQuickProfile,
     storeDetails,
-    clearStoreDetails
+    clearStoreDetails,
+    tranferOverrides,
+    overrides
 }) => {
     const [info, setInfo] = useState(storeDetails?storeDetails.store:defaultStoreInfo);
     const [hours, setHours] = useState(storeDetails?convertArrayHoursToObject(storeDetails.storeHours):convertArrayHoursToObject(defaultStoreHours));
@@ -71,6 +88,8 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
     const [closed, setClosed] = useState(storeDetails?storeDetails.closedDaysTimes:defaultClosed)
     // keeps track of the deleted closed days and times that have an id so that they can be removed from database
     const [deletedClosed, setDeletedClosed] = useState<Partial<ClosedDaysTimes>[]>([]);
+
+    const [overrideProperties, setOverrideProperties] = useState(initialOverrides);
     const [submitButton, setSubmitButton] = useState('');
     const dispatch = useAppDispatch();
     useEffect(() => {
@@ -87,6 +106,37 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
     }, [storeDetails])
 
     useEffect(() => console.log(deletedClosed), [deletedClosed]);
+    useEffect(() => console.log(overrideProperties), [overrideProperties]);
+
+
+    useEffect(() => {
+        if (overrides){
+            // merge this component state with the ovverides properties if they exist
+            setInfo(currentinfo => ({...currentinfo, ...overrides.store, id: currentinfo.id, createdAt: currentinfo.createdAt, isQuickProfile: currentinfo.isQuickProfile }));
+            setHours(currenthours => Object.keys(currenthours).map(dayOfWeek => ({...currenthours[+dayOfWeek], ...overrides.storeHours[+dayOfWeek], dayOfWeek: +dayOfWeek, storeId: currenthours[+dayOfWeek].storeId})));
+            // for the closed days and times we will just add the closed days and time that recieve from the overrides (without the id/storeId)
+            // this is so that we don't have to edit the deletedClosed array making the app much more complicated
+            setClosed(currentclosed => currentclosed.concat(overrides.closedDaysTimes.map(override => ({ from: override.from, to: override.to, repeat: override.repeat, repeatInterval: override.repeatInterval }))));
+        }
+    }, [overrides])
+
+
+    const handleTransferOverrides = () => {
+        const tranferInfo: Partial<Store> = {};
+        const tranferHours: {[dayOfWeek:number]:Partial<StoreHours>} = {};
+        const tranferClosed: Partial<ClosedDaysTimes>[] = [];
+        if (overrideProperties.name)
+            tranferInfo.name = info.name;
+        if (overrideProperties.location)
+            tranferInfo.location = info.location;
+        if (overrideProperties.minTimeBlock)
+            tranferInfo.minTimeBlock = info.minTimeBlock;
+        if (overrideProperties.maxTimeBlock)
+            tranferInfo.maxTimeBlock = info.maxTimeBlock;
+
+        tranferOverrides({ store: tranferInfo, storeHours: tranferHours, closedDaysTimes: tranferClosed });
+    }
+
 
     // functions to send updated data to the server
     const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
@@ -140,6 +190,12 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
 
 
     }
+
+    // callbacks to change the overrideProperties state
+
+    const onChangeOverridePropertyByKey = useCallback((property: OverridePropertiesKeys, newValue: boolean) => {
+        setOverrideProperties(currentProperties => ({...currentProperties, [property]: newValue}));
+    }, []);
 
 
     // callbacks to change the info state
@@ -235,6 +291,9 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                             <InfoForm 
                                 info={info}
                                 onChangeInfoPropertyByName={onChangeInfoPropertyByName}
+                                showOverrideOption={isQuickProfile && storeDetails !== undefined}
+                                overrideProperties={overrideProperties}
+                                onChangeOverridePropertyByKey={onChangeOverridePropertyByKey}
                             />
                         </div>
                         {(storeDetails?.store.id !== undefined) && ((storeDetails.role.name === 'Owner') ?
@@ -296,6 +355,12 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                     className="h-12"
                     onClick={() => setSubmitButton('createstore')}
                 >Create {isQuickProfile && 'Quick Profile'}</Button>}
+                {(isQuickProfile && storeDetails) && 
+                <Button
+                    type="button"
+                    className="h-12"
+                    onClick={handleTransferOverrides}
+                >Transfer selected fields</Button>}
             </div>
             </form>
         </div>

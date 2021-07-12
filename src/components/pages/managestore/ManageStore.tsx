@@ -5,21 +5,35 @@ import {
   selectStoreState,
   fetchAllUserStore,
 } from "../../../features/store/storeSlice";
-import { StoreWithDetails } from "../../../features/store/storeTypes";
+import { Store, StoreHours, ClosedDaysTimes } from "../../../features/store/storeTypes";
 import StoreDetailsForm from "./StoreDetailsForm";
 import * as VscIcons from 'react-icons/vsc';
 import * as BsIcons from 'react-icons/bs';
 
+export interface Overrides {
+  store: Partial<Store>;
+  storeHours: {[dayOfWeek:number]:Partial<StoreHours>};
+  closedDaysTimes: Partial<ClosedDaysTimes>[];
+}
+
 const ManageStore: React.FC = () => {
   const dispatch = useAppDispatch();
   const { stores } = useAppSelector(selectStoreState);
-  const [selectedStore, setSelectedStore] = useState<StoreWithDetails | undefined>()
+  const [selectedStoreIndex, setSelectedStoreIndex] = useState(-1)
+  // overrides are any property that will override the default state in the StoreDetailsForm  when a button is clicked
+  const [overrides, setOverrides] = useState<Overrides | undefined>()
 
   let indexOfQuickProfile = stores.findIndex(storeWithDetail => storeWithDetail.store.isQuickProfile);
   const storesWithoutQP = stores.filter((_, i) => i !== indexOfQuickProfile);
 
+  const selectedStore = selectedStoreIndex >= 0 ? storesWithoutQP[selectedStoreIndex]: undefined;
   const clearStoreDetails = () => {
-    setSelectedStore(undefined);
+    setSelectedStoreIndex(-1);
+  }
+
+  // transfer overrides transfers the state overrides from one StoreDetailForm child component to the other
+  const tranferOverrides = (newOverrides: Overrides) => {
+    setOverrides(newOverrides);
   }
 
   useEffect(() => {
@@ -38,6 +52,7 @@ const ManageStore: React.FC = () => {
           isQuickProfile
           storeDetails={stores[indexOfQuickProfile]}
           clearStoreDetails={clearStoreDetails}
+          tranferOverrides={tranferOverrides}
         />
       </div>
       <div className="md:col-span-1 md:row-span-3">
@@ -52,7 +67,7 @@ const ManageStore: React.FC = () => {
             <div className="text-xs text-gray-400">Select the store to edit</div>
           </div>
           <ul>
-            {storesWithoutQP.map((storeDetails) => {
+            {storesWithoutQP.map((storeDetails, index) => {
               const { store, role } = storeDetails;
               return (
                 <li
@@ -61,7 +76,7 @@ const ManageStore: React.FC = () => {
                 >
                   <button
                     className={`text-left w-full pl-1 pr-1 focus:outline-none hover:bg-green-50 ${selectedStore?.store.id === store.id ? 'bg-gray-100' : ''}`}
-                    onClick={() => setSelectedStore(storeDetails)}
+                    onClick={() => setSelectedStoreIndex(index)}
                   >
                     <h6 className="font-semibold text-sm">{store.name}</h6>
                     <div className="font-normal text-xs text-gray-400">
@@ -80,6 +95,8 @@ const ManageStore: React.FC = () => {
           isQuickProfile={false}
           storeDetails={selectedStore}
           clearStoreDetails={clearStoreDetails}
+          tranferOverrides={tranferOverrides}
+          overrides={overrides}
         />
       </div>
     </div>

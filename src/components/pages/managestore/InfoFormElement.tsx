@@ -10,6 +10,9 @@ interface InfoFormElementProps {
     options?: {label:string; value: any}[];
     isChecked?: boolean;
     isRequired?: boolean;
+    showOverrideOption: boolean;
+    overrideChecked: boolean;
+    onOverrideCheckedChanged: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const InfoFormElement: React.FC<InfoFormElementProps> = ({
@@ -21,41 +24,59 @@ const InfoFormElement: React.FC<InfoFormElementProps> = ({
     onChange,
     options,
     isChecked,
-    isRequired
+    isRequired,
+    showOverrideOption,
+    overrideChecked,
+    onOverrideCheckedChanged
 }) => {
     return (
-        <div className="pt-5 text-xs">
-            <label htmlFor={id}>{label}: </label>
-            {(type === 'text' || type === 'number') &&
-            <input 
-                id={id}
-                name={name}
-                className="border-b border-black focus:outline-none"
-                type={type}
-                value={value}
-                onChange={onChange}
-                required={isRequired}
-            />}
-            {(type === 'select') &&
-            <select
-                id={id}
-                name={name}
-                className="border-b border-black focus:outline-none"
-                value={value}
-                onChange={onChange}>
-                    {options && options.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                </select>}
-            {(type === 'checkbox') &&
-            <input
-                id={id}
-                name={name}
-                className=""
-                type="checkbox"
-                checked={isChecked}
-                onChange={onChange} 
-            />}
-        </div>
-    )
+      <div className="pt-5 text-xs">
+        <label htmlFor={id}>{label}: </label>
+        {(type === "text" || type === "number") && (
+          <input
+            id={id}
+            name={name}
+            className="border-b border-black focus:outline-none"
+            type={type}
+            value={value}
+            onChange={onChange}
+            required={isRequired}
+          />
+        )}
+        {type === "select" && (
+          <select
+            id={id}
+            name={name}
+            className="border-b border-black focus:outline-none"
+            value={value}
+            onChange={onChange}
+          >
+            {options &&
+              options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+          </select>
+        )}
+        {type === "checkbox" && (
+          <input
+            id={id}
+            name={name}
+            className=""
+            type="checkbox"
+            checked={isChecked}
+            onChange={onChange}
+          />
+        )}
+        {showOverrideOption && (
+          <div className="inline-block">
+            {" "}
+            {'<'} <input type="checkbox" checked={overrideChecked} onChange={onOverrideCheckedChanged} />
+          </div>
+        )}
+      </div>
+    );
 }
 
 export default InfoFormElement
