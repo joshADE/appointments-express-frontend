@@ -106,7 +106,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
     }, [storeDetails])
 
     useEffect(() => console.log(deletedClosed), [deletedClosed]);
-    useEffect(() => console.log(overrideProperties), [overrideProperties]);
+    // useEffect(() => console.log(overrideProperties), [overrideProperties]);
 
 
     useEffect(() => {
@@ -123,8 +123,8 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
 
     const handleTransferOverrides = () => {
         const tranferInfo: Partial<Store> = {};
-        const tranferHours: {[dayOfWeek:number]:Partial<StoreHours>} = {};
-        const tranferClosed: Partial<ClosedDaysTimes>[] = [];
+        let tranferHours: {[dayOfWeek:number]:Partial<StoreHours>} = {};
+        let tranferClosed: Partial<ClosedDaysTimes>[] = [];
         if (overrideProperties.name)
             tranferInfo.name = info.name;
         if (overrideProperties.location)
@@ -133,6 +133,12 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
             tranferInfo.minTimeBlock = info.minTimeBlock;
         if (overrideProperties.maxTimeBlock)
             tranferInfo.maxTimeBlock = info.maxTimeBlock;
+
+        if (overrideProperties.hours)
+            tranferHours = hours;
+        
+        if (overrideProperties.closed)
+            tranferClosed = closed;
 
         tranferOverrides({ store: tranferInfo, storeHours: tranferHours, closedDaysTimes: tranferClosed });
     }
@@ -312,6 +318,11 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                                 onIncrementOrDecrement={onIncrementOrDecrement}
                                 onChangeOpenOrClose={onChangeOpenOrClose}
                             />
+                            {(isQuickProfile && storeDetails !== undefined) && 
+                            <div className="inline-block">
+                                {" "}
+                                {'<'} <input type="checkbox" checked={overrideProperties.hours} onChange={e => onChangeOverridePropertyByKey('hours', e.target.checked)} />
+                            </div>}
                         </div>
                         {(storeDetails?.store.id !== undefined) &&
                         <button
@@ -338,6 +349,15 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                                 className="font-bold text-sm p-1 text-gray-700 bg-gray-300"
                                 onClick={() => setSubmitButton('editclosed')}
                             >Save</button>}
+                            {(isQuickProfile && storeDetails !== undefined) && 
+                            <div className="inline-block">
+                                {" "}
+                                 <input 
+                                    type="checkbox" 
+                                    checked={overrideProperties.closed} 
+                                    onChange={e => {onChangeOverridePropertyByKey('closed', e.target.checked); alert('When copying over the closed days/time it will add the closed days/time rather than replace them')}} 
+                                />
+                            </div>}
                         </div>
                     </div>
                 </div>

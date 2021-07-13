@@ -30,6 +30,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
     addClosed,
     deleteClosed
 }) => {
+    console.log('Rerendered ClosedDaysTimesList');
         return (<div className="text-xs w-full">
             <ul className="w-full">
                 {closed.map((cdt, index) => {

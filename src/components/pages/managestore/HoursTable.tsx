@@ -23,6 +23,7 @@ const HoursTable: React.FC<HoursTableProps> = ({
         const tableRef = useRef<HTMLTableElement>(null);
         const columns = [0, 1, 2, 3, 4, 5, 6];
         
+        console.log('Rerendered HoursTable');
 
         useEffect(() => {
             const eventListener = (e: MouseEvent) => { 
@@ -34,7 +35,7 @@ const HoursTable: React.FC<HoursTableProps> = ({
         },[])
 
         return (
-        <table className="font-roboto text-xs font-normal table-auto border-collapse" ref={tableRef}>
+        <table className="font-roboto text-xs font-normal table-auto border-collapse inline-block" ref={tableRef}>
             <thead>
                 <tr>
                     <th className="border border-gray-300" key="-1">{' '}</th>
