@@ -211,18 +211,18 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
     }, []);
 
     // callbacks to changes the hours state
-    const onIncrementOrDecrement = useCallback((dayOfWeek: number, isOpenTime: boolean, amount: number) => {
+    const onChangeHours = useCallback((dayOfWeek: number, isOpenTime: boolean, newTime: string) => {
         if (isOpenTime)
             setHours(currentHours => 
                 currentHours[dayOfWeek] && currentHours[dayOfWeek].open ? 
                 Object.assign({}, currentHours, 
-                    {[dayOfWeek]: { ...currentHours[dayOfWeek], open: moment(currentHours[dayOfWeek].open, 'HH:mm:ss').add(amount, 'minute').format('HH:mm:ss')}}):
+                    {[dayOfWeek]: { ...currentHours[dayOfWeek], open: newTime}}):
                 currentHours);
         else
             setHours(currentHours => 
                 currentHours[dayOfWeek] && currentHours[dayOfWeek].close ? 
                 Object.assign({}, currentHours, 
-                    {[dayOfWeek]: { ...currentHours[dayOfWeek], close: moment(currentHours[dayOfWeek].close, 'HH:mm:ss').add(amount, 'minute').format('HH:mm:ss')}}):
+                    {[dayOfWeek]: { ...currentHours[dayOfWeek], close: newTime}}):
                 currentHours);                   
     },[]);
 
@@ -287,8 +287,8 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
     }, [closed]);
     return (
         <div className="font-roboto h-full pb-5">
-            <form className="w-full h-full flex" onSubmit={handleSubmit}>
-            <div className="w-3/4 h-full">
+            <form className="w-full h-full flex flex-col md:flex-row" onSubmit={handleSubmit}>
+            <div className="md:w-3/4 h-full">
                 <h3 className="font-bold text-2xl border-b-2 border-gray-900">{isQuickProfile ? (storeDetails ? "Quick Profile" : "Create Quick Profile") : (storeDetails ? "Edit " + storeDetails.store.name : "Create new store")}</h3>
                 <div className="h-full flex flex-col md:flex-row md:flex-wrap overflow-auto">
                     <div className="md:w-56 mr-4 relative">
@@ -312,10 +312,10 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                     <div className="md:w-max mr-4 relative">
                         <h4 className="font-bold text-lg border-b border-gray-900">Hours</h4>
                         
-                        <div>
+                        <div className="overflow-x-auto">
                             <HoursTable 
                                 hours={hours}
-                                onIncrementOrDecrement={onIncrementOrDecrement}
+                                onChangeHours={onChangeHours}
                                 onChangeOpenOrClose={onChangeOpenOrClose}
                             />
                             {(isQuickProfile && storeDetails !== undefined) && 
@@ -362,7 +362,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                     </div>
                 </div>
             </div>
-            <div className="w-1/4 h-full flex flex-col justify-center items-center">
+            <div className="w-1/4 md:h-full flex flex-col justify-center items-center">
                 {(!isQuickProfile && storeDetails) && 
                 <Button
                     type="button"
