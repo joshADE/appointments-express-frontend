@@ -3,7 +3,11 @@ module.exports = {
   // https://tailwindcss.com/docs/just-in-time-mode
   // mode: "jit",
   theme: {
-    extend: {},
+    extend: {
+      gridTemplateRows: { 
+        'store-section': '100px repeat(2, minmax(0, 1fr)) 100px'
+      }
+    },
     fontFamily: {
       'oswald': ['Oswald', 'ui-sans-serif', 'sans-serif'],
       'montserrat': ['Montserrat', 'ui-sans-serif', 'sans-serif'],

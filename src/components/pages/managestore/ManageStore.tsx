@@ -40,7 +40,7 @@ const ManageStore: React.FC = () => {
     dispatch(fetchAllUserStore());
   }, [dispatch]);
   return (
-    <div className="overflow-y-auto h-full w-11/12 font-roboto p-4 grid gap-4 sm:grid-cols-1 md:grid-cols-4 md:grid-rows-4">
+    <div className="overflow-y-auto h-full w-11/12 font-roboto p-4 grid gap-4 grid-cols-1 md:grid-cols-4 md:grid-rows-store-section">
       <div className="md:col-span-4">
         <DashboardPageHeader
           title="Manage Store and Times"

@@ -362,7 +362,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                     </div>
                 </div>
             </div>
-            <div className="w-1/4 md:h-full flex flex-col justify-center items-center">
+            <div className="md:w-1/4 md:h-full flex flex-col items-start justify-center md:items-center">
                 {(!isQuickProfile && storeDetails) && 
                 <Button
                     type="button"
