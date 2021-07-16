@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Home from './components/pages/home/Home';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Register from './components/pages/auth/Register';
 import ProtectedRoute from './components/pages/auth/ProtectedRoute';
@@ -27,7 +27,9 @@ const App: React.FC = () => {
     <Router>
       <div className="App">
         <Switch>
-          <Route exact path="/" component={Home} />
+          <Route exact path="/">
+            <Home isAuthenticated={isAuthenticated} isLoading={isLoading} />
+          </Route>
           <Route path="/register">
             <Register isAuthenticated={isAuthenticated} isLoading={isLoading} />
           </Route>

@@ -1,9 +1,43 @@
 import React from 'react'
+import HomeSection from './HomeSection'
+import Navigation from './Navigation'
 
-const Home: React.FC = () => {
+
+interface HomeProps {
+    isAuthenticated: boolean;
+    isLoading: boolean;
+}
+
+export const sections = [
+    {
+        title: 'Home',
+        name: 'home'
+    }, 
+    {
+        title: 'About',
+        name: 'about'
+    },
+    {
+        title: 'Features',
+        name: 'features'
+    },
+    {
+        title: 'Steps',
+        name: 'steps'
+    },
+    {
+        title: 'Roles',
+        name: 'roles'
+    },
+]
+const Home: React.FC<HomeProps> = ({
+    isAuthenticated, 
+    isLoading
+}) => {
     return (
         <div>
-            You are looking at home
+            <Navigation isAuthenticated={isAuthenticated} isLoading={isLoading} />
+            <HomeSection />
         </div>
     )
 }
