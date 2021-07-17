@@ -1,4 +1,5 @@
 import React from 'react'
+import AboutSection from './AboutSection'
 import HomeSection from './HomeSection'
 import Navigation from './Navigation'
 
@@ -38,6 +39,7 @@ const Home: React.FC<HomeProps> = ({
         <div>
             <Navigation isAuthenticated={isAuthenticated} isLoading={isLoading} />
             <HomeSection />
+            <AboutSection />
         </div>
     )
 }

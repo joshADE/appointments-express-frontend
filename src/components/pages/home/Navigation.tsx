@@ -27,9 +27,9 @@ const Navigation: React.FC<NavigationProps> = ({
 
   return (
     <nav className="fixed w-full top-0 left-0 z-50 max-w-full font-roboto bg-white">
-      <div className="flex justify-end md:justify-around items-center py-2 px-4 border-b border-gray-300 my-0 md:mx-5">
+      <div className="flex justify-between md:justify-around items-center py-2 px-4 border-b border-gray-300 my-0 md:mx-5">
         <div className="hidden md:block md:invisible">AE</div>
-        <div className="flex justify-end items-center">
+        <div className="flex justify-start items-center">
           <ul className={`flex flex-col md:flex-row absolute md:relative left-0 top-full md:top-0 justify-between w-full text-sm bg-white overflow-hidden transition-all duration-500 ${expanded? 'max-h-80': 'max-h-0'} md:max-h-full`}>
             {sections.map((section, index) => {
               const { name, title } = section;
@@ -49,7 +49,7 @@ const Navigation: React.FC<NavigationProps> = ({
             <div className={`w-6 h-1 m-1 bg-green-700 transition-all duration-500 transform ${expanded? 'rotate-45 -translate-y-2': ''}`} />
           </button>
         </div>
-        <div className="text-sm font-bold hidden md:block">
+        <div className="text-sm font-bold">
           {isLoading ? (
             <SkewLoader
               color="#333"
@@ -60,7 +60,7 @@ const Navigation: React.FC<NavigationProps> = ({
           ) : isAuthenticated ? (
             <>
               <button 
-                className="text-gray-500 font-bold hover:text-gray-700 mr-6"
+                className="text-gray-500 font-bold hover:text-gray-700 mr-4"
                 onClick={() => dispatch(logoutSuccess())}
               >Logout</button>
               <Link className="text-gray-500 hover:text-gray-700" to="/dashboard">Dashboard</Link>
