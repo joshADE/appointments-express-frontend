@@ -3,6 +3,7 @@ import AboutSection from './AboutSection'
 import FeaturesSection from './FeaturesSection'
 import HomeSection from './HomeSection'
 import Navigation from './Navigation'
+import StepsSection from './StepsSection'
 
 
 interface HomeProps {
@@ -42,6 +43,7 @@ const Home: React.FC<HomeProps> = ({
             <HomeSection />
             <AboutSection />
             <FeaturesSection />
+            <StepsSection />
         </div>
     )
 }
