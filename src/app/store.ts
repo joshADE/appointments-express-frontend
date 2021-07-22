@@ -1,15 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
 import logger from 'redux-logger'
-import userSlice from '../features/user/userSlice'
-import storeSlice from '../features/store/storeSlice'
-import errorSlice from '../features/error/errorSlice'
 import authSlice from '../features/auth/authSlice'
 import { appointmentApi } from './services/appointments'
 export const store = configureStore({
   reducer: {
-    users: userSlice,
-    stores: storeSlice,
-    errors: errorSlice,
     auth: authSlice,
     [appointmentApi.reducerPath]: appointmentApi.reducer
   },

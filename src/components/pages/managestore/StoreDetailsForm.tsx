@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { StoreWithDetails, Store, StoreHours, ClosedDaysTimes, RepeatInterval, CreateStoreRequest, UpdateClosedRequest } from '../../../features/store/storeTypes'
-import { useAppDispatch } from "../../../app/hooks";
+
 import {
-    createUserStore,
-    editUserStoreInfo,
-    editUserStoreHours,
-    editUserStoreClosed
-  } from "../../../features/store/storeSlice";
+    useCreateStoreMutation,
+    useEditStoreHoursMutation,
+    useEditStoreInfoMutation,
+    useEditStoreClosedDaysAndTimesMutation
+  } from "../../../app/services/appointments";
 import HoursTable from './HoursTable';
 import InfoForm from './InfoForm';
 import moment from 'moment';
@@ -91,7 +91,11 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
 
     const [overrideProperties, setOverrideProperties] = useState(initialOverrides);
     const [submitButton, setSubmitButton] = useState('');
-    const dispatch = useAppDispatch();
+    const [createStore, { isLoading: isCreatingStore }] = useCreateStoreMutation();
+    const [editInfo, { isLoading: isEditingInfo }] = useEditStoreInfoMutation();
+    const [editHours, { isLoading: isEditingHours }] = useEditStoreHoursMutation();
+    const [editClosed, { isLoading: isEditingClosed }] = useEditStoreClosedDaysAndTimesMutation();
+
     useEffect(() => {
         if (storeDetails){
             setInfo(storeDetails.store);
@@ -145,21 +149,20 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
 
 
     // functions to send updated data to the server
-    const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         alert(submitButton);
         if (submitButton === 'createstore'){
             const requestObject : CreateStoreRequest = { store: info, storeHours: convertObjectHoursToArray(hours), closedDaysTimes: closed };
             
             requestObject.store.isQuickProfile = isQuickProfile;
-            
-            dispatch(
-            createUserStore(
-                requestObject,
-                () => { window.alert("Successfully added store"); clearStoreDetails(); },
-                () => window.alert("Failed to add store")
-            )
-            );
+            try {
+                await createStore(requestObject).unwrap();
+                alert("Successfully added store"); 
+                clearStoreDetails();
+            } catch (err) {
+                alert("Failed to add store")
+            }
         }
 
         if (submitButton === 'editinfo' && info.id){
@@ -169,13 +172,25 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
             payload.location = info.location;
             payload.minTimeBlock = info.minTimeBlock;
             payload.maxTimeBlock = info.maxTimeBlock;
-            dispatch(editUserStoreInfo(info.id, payload, () => alert("success"), () => alert("failure")));
+            try {
+                await editInfo({ id: info.id, store: payload}).unwrap();
+                alert("success");
+            } catch (err) { 
+                alert("failure");
+            }
         }
 
         if (submitButton === 'edithours' && info.id){
             const arrayHours = convertObjectHoursToArray(hours);
-            if (arrayHours.every(times => times.storeId === info.id))
-                dispatch(editUserStoreHours(info.id, arrayHours, () => alert("success"), () => alert("failure")));
+            if (arrayHours.every(times => times.storeId === info.id)){
+                try {
+                    await editHours({ id: info.id, hours: arrayHours}).unwrap();
+                    alert("success");
+                } catch (err) { 
+                    alert("failure");
+                }
+            }
+                
         }
 
         if (submitButton === 'editclosed' && info.id){
@@ -183,15 +198,14 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
             const toUpdate = closed.filter(cdt => cdt.id !== undefined);
             const closedRequest : UpdateClosedRequest = {toAdd, toUpdate, toRemove: deletedClosed}
 
-            
-            dispatch(
-              editUserStoreClosed(
-                info.id,
-                closedRequest,
-                () => { setDeletedClosed([]); alert("success")},
-                () => alert("failure")
-              )
-            );
+            try {
+                await editClosed({ id: info.id, closed: closedRequest  }).unwrap();
+                setDeletedClosed([]); 
+                alert("success");
+            } catch (err) {
+                alert("failure");
+            }
+             
         }
 
 
@@ -305,6 +319,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                         {(storeDetails?.store.id !== undefined) && ((storeDetails.role.name === 'Owner') ?
                         <button
                             type="submit"
+                            disabled={isEditingInfo}
                             className="font-bold text-sm p-1 text-gray-700 bg-gray-300 mt-1"
                             onClick={() => setSubmitButton('editinfo')}
                         >Save</button>: <div className="text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500">Must be owner to edit the details</div>)}
@@ -327,6 +342,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                         {(storeDetails?.store.id !== undefined) &&
                         <button
                             type="submit"
+                            disabled={isEditingHours}
                             className="font-bold text-sm p-1 text-gray-700 bg-gray-300 mt-1"
                             onClick={() => setSubmitButton('edithours')}
                         >Save</button>}
@@ -346,6 +362,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                             {(storeDetails?.store.id !== undefined) &&
                             <button
                                 type="submit"
+                                disabled={isEditingClosed}
                                 className="font-bold text-sm p-1 text-gray-700 bg-gray-300"
                                 onClick={() => setSubmitButton('editclosed')}
                             >Save</button>}
@@ -372,6 +389,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                 {(storeDetails?.store.id === undefined) && 
                 <Button
                     type="submit"
+                    disabled={isCreatingStore}
                     className="h-12"
                     onClick={() => setSubmitButton('createstore')}
                 >Create {isQuickProfile && 'Quick Profile'}</Button>}

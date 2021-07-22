@@ -54,15 +54,15 @@ export const appointmentApi = createApi({
         }),
         editStoreInfo: build.mutation<StoreWithDetails, { id: number ;store: Partial<Store> }>({
             query: (data) => ({ url: `stores/${data.id}`, method: 'PATCH', body: converObjectToReplaceJsonPatch(data.store) }),
-            invalidatesTags: (result, error, args) => [{ type: 'Store', id: args.id }, { type: 'Store', id: 'LIST' }]
+            invalidatesTags: (result, error, args) => [{ type: 'Store', id: args.id }]
         }),
         editStoreHours: build.mutation<StoreWithDetails, { id: number ;hours: Partial<StoreHours>[] }>({
             query: (data) => ({ url: `stores/hours/${data.id}`, method: 'PUT', body: data.hours }),
-            invalidatesTags: (result, error, args) => [{ type: 'Store', id: args.id }, { type: 'Store', id: 'LIST' }]
+            invalidatesTags: (result, error, args) => [{ type: 'Store', id: args.id }]
         }),
         editStoreClosedDaysAndTimes: build.mutation<StoreWithDetails, { id: number ;closed: UpdateClosedRequest }>({
             query: (data) => ({ url: `stores/closed/${data.id}`, method: 'PUT', body: data.closed }),
-            invalidatesTags: (result, error, args) => [{ type: 'Store', id: args.id }, { type: 'Store', id: 'LIST' }]
+            invalidatesTags: (result, error, args) => [{ type: 'Store', id: args.id }]
         }),
     })
 });
