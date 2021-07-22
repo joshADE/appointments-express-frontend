@@ -3,6 +3,7 @@ import { RootState } from '../store';
 import { User, UserLoginData, UserRegisterData } from '../../features/user/userTypes';
 import { StoreWithDetails, CreateStoreRequest, Store, StoreHours, UpdateClosedRequest } from '../../features/store/storeTypes';
 import { converObjectToReplaceJsonPatch } from '../../features/commonTypes';
+import { baseUrl } from '../../axios';
 
 function providesList<R extends { id: string | number }[], T extends string>(
     resultsWithIds: R | undefined,
@@ -17,7 +18,7 @@ function providesList<R extends { id: string | number }[], T extends string>(
 }
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: 'https://localhost:44371/api',
+    baseUrl,
     prepareHeaders: (headers, { getState }) => {
         const token = (getState() as RootState).auth.token;
         if(token){
