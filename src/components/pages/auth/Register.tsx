@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react'
 import { PuffLoader } from 'react-spinners';
 import { Link, useHistory } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import { register, selectUserState } from '../../../features/user/userSlice'
 import { UserRegisterData } from '../../../features/user/userTypes'
+import { useGetUsersQuery, useRegisterMutation, useLoginMutation } from '../../../app/services/appointments'
 import { css } from '@emotion/react';
 import { Left } from './Left';
 import { Formik, Form } from 'formik';
@@ -31,16 +30,13 @@ const override = css`
 `;
 
 const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
-    const { allUsers } = useAppSelector(selectUserState);
+    const { isFetching: allUsersFetching, data: allUsers } = useGetUsersQuery();
+    const [register, { isLoading: registerLoading }] = useRegisterMutation();
+    const [login, { isLoading: loginLoading }] = useLoginMutation();
+
 
     const history = useHistory();
-    const dispatch = useAppDispatch();
 
-    // useEffect(() => {
-    //     // race condition to set isLoading to false (enabling the user to register) between this dispatch and the main App.tsx dispatch of loadUser
-    //     // instead dispatch fetch all users only after the loadUsers is finished as a callback in App.tsx
-    //     dispatch(fetchAllUser());
-    // }, [dispatch]);
 
     useEffect(() => {
         if (isAuthenticated)
@@ -77,7 +73,7 @@ const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
                 .required()
                 .min(2)
                 .not(
-                  allUsers.map((u) => u.username),
+                  allUsers? allUsers.map((u) => u.username): [],
                   "username is already taken"
                 ),
               password: yup.string().required().min(6),
@@ -89,11 +85,11 @@ const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
                 .email()
                 .required()
                 .not(
-                  allUsers.map((u) => u.email),
+                  allUsers? allUsers.map((u) => u.email): [],
                   "email is already taken"
                 ),
             })}
-            onSubmit={(values, actions) => {
+            onSubmit={async (values, actions) => {
               const { email, firstName, lastName, password, username } = values;
               const payload: UserRegisterData = {
                 email,
@@ -102,16 +98,16 @@ const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
                 password,
                 username,
               };
-              dispatch(
-                register(
-                  payload,
-                  () => {
-                    actions.resetForm();
-                    history.push("/dashboard");
-                  },
-                  () => window.alert("Failed to register")
-                )
-              );
+              try { 
+                await register(payload).unwrap();
+                await login({ username, password }).unwrap();
+                // authentication management is handled in the auth slice
+                // error management is also handled there aswell
+                actions.resetForm();
+              }catch (err) {
+                console.log(err)
+              }
+                  
             }}
           >
             <Form>
@@ -146,14 +142,14 @@ const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
 
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || allUsersFetching || registerLoading || loginLoading}
                 className="mx-auto block"
               >
                 <div className="flex justify-center items-center">
                   <span className="mr-2">Register</span>
                   <PuffLoader
                     color="#369952"
-                    loading={isLoading}
+                    loading={isLoading || allUsersFetching || registerLoading || loginLoading}
                     size="24px"
                     css={override}
                   />

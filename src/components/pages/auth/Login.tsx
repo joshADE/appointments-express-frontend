@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { PuffLoader } from "react-spinners";
 import { useHistory } from "react-router-dom";
-import { login } from "../../../features/user/userSlice";
-import { useAppDispatch } from "../../../app/hooks";
+import { useLoginMutation } from '../../../app/services/appointments'
 import { css } from "@emotion/react";
 import { Formik, Form } from 'formik';
 import { Link } from 'react-router-dom'
@@ -28,7 +27,7 @@ const override = css`
 
 const Login: React.FC<LoginProps> = ({ isAuthenticated, isLoading }) => {
   const history = useHistory();
-  const dispatch = useAppDispatch();
+  const [login, { isLoading: loginLoading }] = useLoginMutation();
 
   useEffect(() => {
     if (isAuthenticated) history.push("/dashboard");
@@ -50,17 +49,16 @@ const Login: React.FC<LoginProps> = ({ isAuthenticated, isLoading }) => {
             password: yup.string()
               .required('Required')
           })}
-          onSubmit={(values, action) => {
-            dispatch(
-              login(
-                values,
-                () => {
-                  action.resetForm();
-                  history.push("/dashboard");
-                },
-                () => alert("Failed to login")
-              )
-            );
+          onSubmit={async (values, actions) => {
+            try { 
+              
+              await login(values).unwrap();
+              // authentication management is handled in the auth slice
+              // error management is also handled there aswell
+              actions.resetForm();
+            }catch (err) {
+              console.log(err)
+            }
           }}
         >
           <Form>
@@ -76,14 +74,14 @@ const Login: React.FC<LoginProps> = ({ isAuthenticated, isLoading }) => {
           
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || loginLoading}
               className="mx-auto block"
             >
               <div className="flex justify-center items-center">
                 <span className="mr-2">Login</span>
                 <PuffLoader
                   color="#369952"
-                  loading={isLoading}
+                  loading={isLoading || loginLoading}
                   size="24px"
                   css={override}
                 />

@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import React, { useState } from "react";
 import DashboardPageHeader from "../../shared/DashboardPageHeader";
-import {
-  selectStoreState,
-  fetchAllUserStore,
-} from "../../../features/store/storeSlice";
+import { useGetAllUserStoresQuery } from "../../../app/services/appointments";
 import { Store, StoreHours, ClosedDaysTimes } from "../../../features/store/storeTypes";
 import StoreDetailsForm from "./StoreDetailsForm";
 import * as VscIcons from 'react-icons/vsc';
@@ -17,14 +13,13 @@ export interface Overrides {
 }
 
 const ManageStore: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { stores } = useAppSelector(selectStoreState);
+  const { data: stores } = useGetAllUserStoresQuery()
   const [selectedStoreIndex, setSelectedStoreIndex] = useState(-1)
   // overrides are any property that will override the default state in the StoreDetailsForm  when a button is clicked
   const [overrides, setOverrides] = useState<Overrides | undefined>()
 
-  let indexOfQuickProfile = stores.findIndex(storeWithDetail => storeWithDetail.store.isQuickProfile);
-  const storesWithoutQP = stores.filter((_, i) => i !== indexOfQuickProfile);
+  let indexOfQuickProfile = stores? stores.findIndex(storeWithDetail => storeWithDetail.store.isQuickProfile) : -1;
+  const storesWithoutQP = stores? stores.filter((_, i) => i !== indexOfQuickProfile) : [];
 
   const selectedStore = selectedStoreIndex >= 0 ? storesWithoutQP[selectedStoreIndex]: undefined;
   const clearStoreDetails = () => {
@@ -36,9 +31,6 @@ const ManageStore: React.FC = () => {
     setOverrides(newOverrides);
   }
 
-  useEffect(() => {
-    dispatch(fetchAllUserStore());
-  }, [dispatch]);
   return (
     <div className="overflow-y-auto h-full w-11/12 font-roboto p-4 grid gap-4 grid-cols-1 md:grid-cols-4 md:grid-rows-store-section">
       <div className="md:col-span-4">
@@ -50,7 +42,7 @@ const ManageStore: React.FC = () => {
       <div className="md:col-span-3">
         <StoreDetailsForm
           isQuickProfile
-          storeDetails={stores[indexOfQuickProfile]}
+          storeDetails={stores && indexOfQuickProfile >= 0? stores[indexOfQuickProfile] : undefined}
           clearStoreDetails={clearStoreDetails}
           tranferOverrides={tranferOverrides}
         />

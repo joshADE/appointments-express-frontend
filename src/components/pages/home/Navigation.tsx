@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { SkewLoader } from "react-spinners";
 import { css } from "@emotion/react";
 import { useAppDispatch } from '../../../app/hooks';
-import { logoutSuccess } from '../../../features/user/userSlice';
+import { logout } from '../../../features/auth/authSlice';
 
 import { sections } from "./Home";
 
@@ -61,7 +61,7 @@ const Navigation: React.FC<NavigationProps> = ({
             <>
               <button 
                 className="text-gray-500 font-bold hover:text-gray-700 mr-4"
-                onClick={() => dispatch(logoutSuccess())}
+                onClick={() => dispatch(logout())}
               >Logout</button>
               <Link className="text-gray-500 hover:text-gray-700" to="/dashboard">Dashboard</Link>
             </>
