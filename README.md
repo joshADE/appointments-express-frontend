@@ -1,22 +1,56 @@
-# cra-template-tailwindcss-typescript
+# Appointments-Express-Frontend
+> The front end React Redux Toolkit app for Appointments-Express. The backend code can be seen [here](https://github.com/joshADE/Appointments-Express-Backend).
 
-A streamlined [Tailwind CSS](https://tailwindcss.com) template for [Create React App](https://github.com/facebook/create-react-app) in [TypeScript](https://www.typescriptlang.org/).
 
-> This template installs and sets up [Tailwind CSS](https://tailwindcss.com) with TypeScript support.
+# Technologies used
+* [React JS](https://reactjs.org/) (Javascript Library)
+* [Redux](https://redux.js.org/) (State Container)
+* [Redux Toolkit](https://redux-toolkit.js.org/) (Package to help in Redux development)
+* [RTK Query](https://redux-toolkit.js.org/rtk-query/overview) (Data fetching and caching tool built on top of Redux Toolkit)
+* [TypeScript](https://www.typescriptlang.org/) (Static typed superset of JavaScript)
+* [Tailwindcss](https://tailwindcss.com/) (Utility-first CSS framework)
 
-## Usage
+# Requirements
 
-```bash
-npx create-react-app --template tailwindcss-typescript
+* NPM (version 7.x and above) (Download node.js to install npm [here](https://nodejs.org/en/))
+* GIT (version 2.x and above) (Download [here](https://git-scm.com/))
+
+# Getting Started
+
+## Clone Repository
+
+Clone the repository to your computer.
+
+
+```
+git clone https://github.com/joshADE/appointments-express-frontend.git
 ```
 
-## Credits
+## Installation
 
-This project was made possible thanks to the following projects.
+1. cd to the project directory.
+2. run `npm install` to install dependencies.
 
-1. [GeoffSelby/cra-template-tailwindcss](https://github.com/GeoffSelby/cra-template-tailwindcss) - A streamlined Tailwind CSS template for Create React App (in JavaScript).
-2. [cra-template-typescript](https://github.com/facebook/create-react-app/tree/master/packages/cra-template-typescript) - An official TypeScript template for create-react-app.
+```
+npm install
+```
 
-## License
+## Setup the connection to the server
+Inside the src folder, edit axios.ts and change the baseURL variable to the url of the running backend server. Make sure that '/api' is added at the end of the url.
 
-MIT © [Sung M. Kim](https://sung.codes)
+```
+export const baseUrl = (your url here); (i.e. 'https://appointments-express.herokuapp.com/api')
+```
+
+The link to the backend source can be seen above. You will need to get it running in your local environment.
+
+## Available Scripts
+
+In the project directory, you can run:
+
+### `npm start`
+
+Runs the app in the development mode
+
+
+
