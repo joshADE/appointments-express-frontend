@@ -13,6 +13,7 @@ import moment from 'moment';
 import ClosedDaysTimesList from './ClosedDaysTimesList';
 import { Button } from '../../shared/Button';
 import { Overrides } from './ManageStore';
+import Checkbox from '../../shared/Checkbox';
 
 interface StoreDetailsFormProp {
     isQuickProfile: boolean;
@@ -327,7 +328,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                     <div className="md:w-max mr-4 relative">
                         <h4 className="font-bold text-lg border-b border-gray-900">Hours</h4>
                         
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto flex items-center">
                             <HoursTable 
                                 hours={hours}
                                 onChangeHours={onChangeHours}
@@ -336,7 +337,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                             {(isQuickProfile && storeDetails !== undefined) && 
                             <div className="inline-block">
                                 {" "}
-                                {'<'} <input type="checkbox" checked={overrideProperties.hours} onChange={e => onChangeOverridePropertyByKey('hours', e.target.checked)} />
+                                <Checkbox checked={overrideProperties.hours} onChange={e => onChangeOverridePropertyByKey('hours', e)} />
                             </div>}
                         </div>
                         {(storeDetails?.store.id !== undefined) &&
@@ -369,10 +370,9 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                             {(isQuickProfile && storeDetails !== undefined) && 
                             <div className="inline-block">
                                 {" "}
-                                 <input 
-                                    type="checkbox" 
+                                 <Checkbox 
                                     checked={overrideProperties.closed} 
-                                    onChange={e => {onChangeOverridePropertyByKey('closed', e.target.checked); alert('When copying over the closed days/time it will add the closed days/time rather than replace them')}} 
+                                    onChange={e => {onChangeOverridePropertyByKey('closed', e); alert('When copying over the closed days/time it will add the closed days/time rather than replace them')}} 
                                 />
                             </div>}
                         </div>

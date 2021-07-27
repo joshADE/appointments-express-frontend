@@ -56,7 +56,7 @@ const InfoForm: React.FC<InfoFormProps> = ({
                 isRequired
                 showOverrideOption={showOverrideOption}
                 overrideChecked={overrideProperties.name}
-                onOverrideCheckedChanged={e => onChangeOverridePropertyByKey('name', e.target.checked)}
+                onOverrideCheckedChanged={e => onChangeOverridePropertyByKey('name', e)}
             />
             <InfoFormElement 
                 id="location"
@@ -68,7 +68,7 @@ const InfoForm: React.FC<InfoFormProps> = ({
                 isRequired
                 showOverrideOption={showOverrideOption}
                 overrideChecked={overrideProperties.location}
-                onOverrideCheckedChanged={e => onChangeOverridePropertyByKey('location', e.target.checked)}
+                onOverrideCheckedChanged={e => onChangeOverridePropertyByKey('location', e)}
             />
             <InfoFormElement 
                 id="minTimeBlock"
@@ -80,7 +80,7 @@ const InfoForm: React.FC<InfoFormProps> = ({
                 options={timeBlockOptions}
                 showOverrideOption={showOverrideOption}
                 overrideChecked={overrideProperties.minTimeBlock}
-                onOverrideCheckedChanged={e => onChangeOverridePropertyByKey('minTimeBlock', e.target.checked)}
+                onOverrideCheckedChanged={e => onChangeOverridePropertyByKey('minTimeBlock', e)}
             />
             <InfoFormElement 
                 id="maxTimeBlock"
@@ -92,7 +92,7 @@ const InfoForm: React.FC<InfoFormProps> = ({
                 options={timeBlockOptions}
                 showOverrideOption={showOverrideOption}
                 overrideChecked={overrideProperties.maxTimeBlock}
-                onOverrideCheckedChanged={e => onChangeOverridePropertyByKey('maxTimeBlock', e.target.checked)}
+                onOverrideCheckedChanged={e => onChangeOverridePropertyByKey('maxTimeBlock', e)}
             />
         </>
     )

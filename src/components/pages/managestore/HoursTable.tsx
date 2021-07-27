@@ -2,6 +2,7 @@ import React, { memo } from 'react'
 import { StoreHours } from '../../../features/store/storeTypes';
 import moment from 'moment';
 import { TimeInput } from '../../shared/TimeInput';
+import Checkbox from '../../shared/Checkbox';
 
 
 interface HoursTableProps {
@@ -41,11 +42,9 @@ const HoursTable: React.FC<HoursTableProps> = ({
                     {columns.map(value => {
                         return (
                             <td className="w-10" key={"isOpen" + value}>
-                                <input 
-                                    type="checkbox"
-                                    name={"isOpen" + value}
+                                <Checkbox
                                     checked={hours[value] && hours[value].isOpen !== undefined? hours[value].isOpen:false}
-                                    onChange={(e) => onChangeOpenOrClose(value, e.target.checked)}
+                                    onChange={(e) => onChangeOpenOrClose(value, e)}
                                     className="mx-3"
                                 />
                             </td>

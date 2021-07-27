@@ -1,4 +1,5 @@
 import React from 'react'
+import Checkbox from '../../shared/Checkbox';
 
 interface InfoFormElementProps {
     id: string;
@@ -12,7 +13,7 @@ interface InfoFormElementProps {
     isRequired?: boolean;
     showOverrideOption: boolean;
     overrideChecked: boolean;
-    onOverrideCheckedChanged: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onOverrideCheckedChanged: (e: boolean) => void;
 }
 
 const InfoFormElement: React.FC<InfoFormElementProps> = ({
@@ -72,7 +73,7 @@ const InfoFormElement: React.FC<InfoFormElementProps> = ({
         {showOverrideOption && (
           <div className="inline-block">
             {" "}
-            {'<'} <input type="checkbox" checked={overrideChecked} onChange={onOverrideCheckedChanged} />
+            <Checkbox checked={overrideChecked} onChange={onOverrideCheckedChanged} />
           </div>
         )}
       </div>

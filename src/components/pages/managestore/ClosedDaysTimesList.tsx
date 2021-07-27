@@ -4,6 +4,7 @@ import 'react-datetime/css/react-datetime.css';
 import moment from 'moment';
 import * as MdIcons from 'react-icons/md'
 import { ClosedDaysTimes, RepeatInterval } from '../../../features/store/storeTypes';
+import Checkbox from '../../shared/Checkbox';
 
 interface ClosedDaysTimesListProps {
     closed: Partial<ClosedDaysTimes>[];
@@ -71,12 +72,10 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                                 /> */}
                             </div>
                             <div>
-                                <label htmlFor="repeatField">Repeat: </label>
-                                <input 
-                                    id="repeatField" 
-                                    type="checkbox"
+                                <label>Repeat: </label>
+                                <Checkbox
                                     checked={cdt.repeat}
-                                    onChange={e => onChangeRepeat(index, e.target.checked)}
+                                    onChange={e => onChangeRepeat(index, e)}
                                 />
                             </div>
                             <div>
