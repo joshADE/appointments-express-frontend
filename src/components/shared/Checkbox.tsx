@@ -18,11 +18,11 @@ const Checkbox: React.FC<CheckboxProps> = ({
         <span className="relative">
             {checked? 
             <MdIcons.MdCheckBox 
-                className={`inline-block text-gray-500 text-lg ${className}`}
+                className={`inline-block text-gray-500 text-lg cursor-pointer ${className}`}
                 onClick={() => onChange(!checked)}
             /> : 
             <MdIcons.MdCheckBoxOutlineBlank 
-                className={`inline-block text-gray-500 text-lg ${className}`}
+                className={`inline-block text-gray-500 text-lg cursor-pointer ${className}`}
                 onClick={() => onChange(!checked)}
             />}
         </span>
