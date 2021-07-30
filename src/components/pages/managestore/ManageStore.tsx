@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import DashboardPageHeader from "../../shared/DashboardPageHeader";
-import { useGetAllUserStoresQuery } from "../../../app/services/appointments";
+import { useGetAllUserStoresQuery, useDeleteStoreMutation } from "../../../app/services/appointments";
 import {
   Store,
   StoreHours,
@@ -9,6 +9,7 @@ import {
 import StoreDetailsForm from "./StoreDetailsForm";
 import * as VscIcons from "react-icons/vsc";
 import * as BsIcons from "react-icons/bs";
+import * as RiIcons from "react-icons/ri";
 import { SkewLoader } from "react-spinners";
 
 export interface Overrides {
@@ -19,6 +20,7 @@ export interface Overrides {
 
 const ManageStore: React.FC = () => {
   const { data: stores, error, isFetching } = useGetAllUserStoresQuery();
+  const [deleteStore, { isLoading: isDeleting }] = useDeleteStoreMutation();
   const [selectedStoreIndex, setSelectedStoreIndex] = useState(-1);
   // overrides are any property that will override the default state in the StoreDetailsForm  when a button is clicked
   const [overrides, setOverrides] = useState<Overrides | undefined>();
@@ -42,6 +44,16 @@ const ManageStore: React.FC = () => {
   const tranferOverrides = (newOverrides: Overrides) => {
     setOverrides(newOverrides);
   };
+
+  const handleDeleteStore = async (id: number) => {
+    try {
+      const store = await deleteStore(id).unwrap();
+      alert(`Successfully deleted store: ${store.name}`);
+      clearStoreDetails();
+    }catch {
+      alert("Failed to delete store");
+    }
+  }
 
   return (
     <div className="overflow-y-auto h-full w-11/12 font-roboto p-4 grid gap-4 grid-cols-1 md:grid-cols-4 md:grid-rows-store-section">
@@ -100,24 +112,30 @@ const ManageStore: React.FC = () => {
                       className="border-b-2 border-gray-300 pb-2 pt-2"
                     >
                       <button
-                        className={`text-left w-full pl-1 pr-1 focus:outline-none hover:bg-green-50 ${
+                        className={`text-left w-full px-1 flex justify-between focus:outline-none hover:bg-green-50 ${
                           selectedStore?.store.id === store.id
                             ? "bg-gray-100"
                             : ""
                         }`}
                         onClick={() => setSelectedStoreIndex(index)}
                       >
-                        <h6 className="font-semibold text-sm">{store.name}</h6>
-                        <div className="font-normal text-xs text-gray-400">
-                          <div>
-                            <VscIcons.VscLocation className="inline text-lg" />{" "}
-                            {store.location}
-                          </div>
-                          <div>
-                            <BsIcons.BsPerson className="inline text-lg" />{" "}
-                            {role.name}
+                        <div>
+                          <h6 className="font-semibold text-sm">{store.name}</h6>
+                          <div className="font-normal text-xs text-gray-400">
+                            <div>
+                              <VscIcons.VscLocation className="inline text-lg" />{" "}
+                              {store.location}
+                            </div>
+                            <div>
+                              <BsIcons.BsPerson className="inline text-lg" />{" "}
+                              {role.name}
+                            </div>
                           </div>
                         </div>
+                        {role.name === 'Owner' &&
+                        <div className="flex flex-col justify-center items-center">
+                          <button className="focus:outline-none" disabled={isDeleting} onClick={() => handleDeleteStore(store.id)}><RiIcons.RiDeleteBin6Line /></button>
+                        </div>}
                       </button>
                     </li>
                   );

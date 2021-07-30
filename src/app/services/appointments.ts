@@ -34,6 +34,7 @@ export const appointmentApi = createApi({
     endpoints: (build) => ({
         login: build.mutation<{token: string; user: User}, UserLoginData>({
             query: (credentials: UserLoginData) => ({ url: 'users/login', method: 'POST', body: credentials }),
+            invalidatesTags: ['Store', 'User', 'Appointment']       // for the case where a user logs out of one account and immediately into another, clear cache
         }),
         register: build.mutation<User, UserRegisterData>({
             query: (credentials: UserRegisterData) => ({ url: 'users/register', method: 'POST', body: credentials }),
@@ -65,6 +66,10 @@ export const appointmentApi = createApi({
             query: (data) => ({ url: `stores/closed/${data.id}`, method: 'PUT', body: data.closed }),
             invalidatesTags: (result, error, args) => [{ type: 'Store', id: args.id }]
         }),
+        deleteStore: build.mutation<Store, number>({
+            query: (id) => ({ url: `stores/${id}`, method: 'DELETE'}),
+            invalidatesTags: (result, error, args) => [{ type: 'Store', id: args }]
+        }),
     })
 });
 
@@ -78,6 +83,7 @@ export const {
     useEditStoreInfoMutation,
     useEditStoreHoursMutation,
     useEditStoreClosedDaysAndTimesMutation,
+    useDeleteStoreMutation
 } = appointmentApi;
 
 
