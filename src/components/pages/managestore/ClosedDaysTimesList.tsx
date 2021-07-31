@@ -2,7 +2,7 @@ import React, { memo } from 'react'
 import Datetime from 'react-datetime'
 import 'react-datetime/css/react-datetime.css';
 import moment from 'moment';
-import * as MdIcons from 'react-icons/md'
+import * as RiIcons from "react-icons/ri";
 import { ClosedDaysTimes, RepeatInterval } from '../../../features/store/storeTypes';
 import Checkbox from '../../shared/Checkbox';
 
@@ -41,7 +41,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                             className="border border-gray-700 mb-1 w-full relative"
                         >
                             <button type="button" onClick={() => deleteClosed(index)} className="font-normal text-gray-500 hover:text-gray-900 focus:outline-none absolute top-0 right-0" >
-                                <MdIcons.MdDelete className="text-lg" />
+                                <RiIcons.RiDeleteBin6Line className="text-base" />
                             </button>
                             <div>
                                 <label htmlFor="fromField">From: </label>

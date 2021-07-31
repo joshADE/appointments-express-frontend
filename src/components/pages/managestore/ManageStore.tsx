@@ -19,7 +19,7 @@ export interface Overrides {
 }
 
 const ManageStore: React.FC = () => {
-  const { data: stores, error, isFetching } = useGetAllUserStoresQuery();
+  const { data: stores, error, isLoading, isFetching } = useGetAllUserStoresQuery();
   const [deleteStore, { isLoading: isDeleting }] = useDeleteStoreMutation();
   const [selectedStoreIndex, setSelectedStoreIndex] = useState(-1);
   // overrides are any property that will override the default state in the StoreDetailsForm  when a button is clicked
@@ -57,15 +57,16 @@ const ManageStore: React.FC = () => {
 
   return (
     <div className="overflow-y-auto h-full w-11/12 font-roboto p-4 grid gap-4 grid-cols-1 md:grid-cols-4 md:grid-rows-store-section">
-      <div className="md:col-span-4">
+      <div className="md:col-span-3">
         <DashboardPageHeader
           title="Manage Store and Times"
           description="Here you can open a store, manage existing stores, edit your quick store profile, set day and times for a particular store."
         />
+        {isFetching && <SkewLoader color="#333" loading={isFetching} size="20px" />}
       </div>
-      {isFetching ? (
+      {isLoading ? (
         <div className="md:col-span-4 flex justify-center items-center">
-          <SkewLoader color="#333" loading={isFetching} size="36px" />
+          <SkewLoader color="#333" loading={isLoading} size="36px" />
         </div>
       ) : error ? (
         <div className="md:col-span-4 row-span-3 text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500 whitespace-pre-wrap">
@@ -134,7 +135,7 @@ const ManageStore: React.FC = () => {
                         </div>
                         {role.name === 'Owner' &&
                         <div className="flex flex-col justify-center items-center">
-                          <button className="focus:outline-none" disabled={isDeleting} onClick={() => handleDeleteStore(store.id)}><RiIcons.RiDeleteBin6Line /></button>
+                          <button className="font-normal text-gray-500 hover:text-gray-900 focus:outline-none" disabled={isDeleting} onClick={() => handleDeleteStore(store.id)}><RiIcons.RiDeleteBin6Line /></button>
                         </div>}
                       </button>
                     </li>
