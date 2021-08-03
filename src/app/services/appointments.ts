@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
 import { User, UserLoginData, UserRegisterData } from '../../features/user/userTypes';
-import { StoreWithDetails, CreateStoreRequest, Store, StoreHours, UpdateClosedRequest } from '../../features/store/storeTypes';
+import { StoreWithDetails, CreateStoreRequest, Store, StoreHours, UpdateClosedRequest, UserAndRoleForStore } from '../../features/store/storeTypes';
 import { converObjectToReplaceJsonPatch } from '../../features/commonTypes';
 import { baseUrl } from '../../axios';
 
@@ -70,6 +70,9 @@ export const appointmentApi = createApi({
             query: (id) => ({ url: `stores/${id}`, method: 'DELETE'}),
             invalidatesTags: (result, error, args) => [{ type: 'Store', id: args }]
         }),
+        getUsersAndRolesByStoreId: build.query<UserAndRoleForStore[], number>({
+            query: (id) => ({ url: `users/usersandrolesforstore/${id}`})
+        }),
     })
 });
 
@@ -83,7 +86,8 @@ export const {
     useEditStoreInfoMutation,
     useEditStoreHoursMutation,
     useEditStoreClosedDaysAndTimesMutation,
-    useDeleteStoreMutation
+    useDeleteStoreMutation,
+    useGetUsersAndRolesByStoreIdQuery
 } = appointmentApi;
 
 

@@ -1,3 +1,5 @@
+import { User } from "../user/userTypes";
+
 export interface Store {
     id: number;
     name: string;
@@ -36,6 +38,14 @@ export interface ClosedDaysTimes {
     to: string;
     repeat: boolean;
     repeatInterval: RepeatInterval;
+}
+
+
+export interface UserAndRoleForStore {
+    user: User;
+    role: Role;
+    store: Store;
+    createdAt: string;
 }
 
 export interface StoreWithDetails {

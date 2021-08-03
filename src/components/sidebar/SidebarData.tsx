@@ -17,8 +17,8 @@ export const SidebarData = [
         cName: 'nav-text'
     },
     {
-        title: 'Manage People',
-        path: '/dashboard/people',
+        title: 'Manage Roles',
+        path: '/dashboard/roles',
         icon: <BsIcons.BsPerson />,
         cName: 'nav-text'
     },
