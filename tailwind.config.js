@@ -19,7 +19,9 @@ module.exports = {
       opacity: ['disabled'],
       width: ['hover', 'group-hover'],
       textAlign: ['group-hover'],
-      alignSelf: ['group-hover']
+      alignSelf: ['group-hover'],
+      display: ['group-hover'],
+      margin: ['group-hover'],
     }
   },
   plugins: [],

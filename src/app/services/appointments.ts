@@ -71,7 +71,12 @@ export const appointmentApi = createApi({
             invalidatesTags: (result, error, args) => [{ type: 'Store', id: args }]
         }),
         getUsersAndRolesByStoreId: build.query<UserAndRoleForStore[], number>({
-            query: (id) => ({ url: `users/usersandrolesforstore/${id}`})
+            query: (id) => ({ url: `users/usersandrolesforstore/${id}`}),
+            providesTags: ['User', 'Store']
+        }),
+        appointRole: build.mutation<void, {role: string; storeId: number; username: string}>({
+            query: (args) => ({ url: `users/appoint/${args.role}/${args.storeId}/${args.username}`, method: 'POST'}),
+            invalidatesTags: ['User', 'Store']
         }),
     })
 });
@@ -87,7 +92,8 @@ export const {
     useEditStoreHoursMutation,
     useEditStoreClosedDaysAndTimesMutation,
     useDeleteStoreMutation,
-    useGetUsersAndRolesByStoreIdQuery
+    useGetUsersAndRolesByStoreIdQuery,
+    useAppointRoleMutation,
 } = appointmentApi;
 
 
