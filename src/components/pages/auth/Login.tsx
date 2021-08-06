@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { PuffLoader } from "react-spinners";
-import { useHistory } from "react-router-dom";
 import { useLoginMutation } from '../../../app/services/appointments'
 import { css } from "@emotion/react";
 import { Formik, Form } from 'formik';
@@ -11,7 +10,6 @@ import { Button } from "../../shared/Button";
 import { Left } from "./Left";
 
 interface LoginProps {
-  isAuthenticated: boolean;
   isLoading: boolean;
 }
 
@@ -25,13 +23,9 @@ const override = css`
   top: 4px;
 `;
 
-const Login: React.FC<LoginProps> = ({ isAuthenticated, isLoading }) => {
-  const history = useHistory();
+const Login: React.FC<LoginProps> = ({ isLoading }) => {
   const [login, { isLoading: loginLoading }] = useLoginMutation();
 
-  useEffect(() => {
-    if (isAuthenticated) history.push("/dashboard");
-  }, [isAuthenticated, history]);
 
 
   return (

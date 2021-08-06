@@ -9,6 +9,7 @@ import { useAppSelector } from './app/hooks'
 import { selectIsAuthenticated } from './features/auth/authSlice'
 import { useLoadUserQuery } from './app/services/appointments';
 import Login from './components/pages/auth/Login';
+import UnprotectedRoute from './components/pages/auth/UnprotectedRoute';
 
 const App: React.FC = () => {
   
@@ -23,12 +24,12 @@ const App: React.FC = () => {
           <Route exact path="/">
             <Home isAuthenticated={isAuthenticated} isLoading={isLoading} />
           </Route>
-          <Route path="/register">
-            <Register isAuthenticated={isAuthenticated} isLoading={isLoading} />
-          </Route>
-          <Route path="/login">
-            <Login isAuthenticated={isAuthenticated} isLoading={isLoading} />
-          </Route>
+          <UnprotectedRoute path="/register" isAuthenticated={isAuthenticated} redirectPath="/dashboard">
+            <Register isLoading={isLoading} />
+          </UnprotectedRoute>
+          <UnprotectedRoute path="/login" isAuthenticated={isAuthenticated} redirectPath="/dashboard">
+            <Login isLoading={isLoading} />
+          </UnprotectedRoute>
           <ProtectedRoute path="/dashboard" component={Dashboard} authenticationPath='/login' isAuthenticated={isAuthenticated} />
           {/* <Route path="/dashboard" component={Dashboard} /> */}
           <Route path="*" component={() => <>Page Not Found</>} />

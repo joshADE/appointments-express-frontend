@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { PuffLoader } from 'react-spinners';
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { UserRegisterData } from '../../../features/user/userTypes'
 import { useGetUsersQuery, useRegisterMutation, useLoginMutation } from '../../../app/services/appointments'
 import { css } from '@emotion/react';
@@ -11,7 +11,6 @@ import { FormTextInput } from "../../shared/FormElements";
 import { Button } from "../../shared/Button";
 
 interface RegisterProps {
-  isAuthenticated: boolean;
   isLoading: boolean;
 }
 
@@ -29,19 +28,13 @@ const override = css`
     top: 4px;
 `;
 
-const Register: React.FC<RegisterProps> = ({ isAuthenticated, isLoading }) => {
+const Register: React.FC<RegisterProps> = ({ isLoading }) => {
     const { isFetching: allUsersFetching, data: allUsers } = useGetUsersQuery();
     const [register, { isLoading: registerLoading }] = useRegisterMutation();
     const [login, { isLoading: loginLoading }] = useLoginMutation();
 
 
-    const history = useHistory();
 
-
-    useEffect(() => {
-        if (isAuthenticated)
-          history.push('/dashboard');
-    }, [isAuthenticated, history]);
 
 
 
