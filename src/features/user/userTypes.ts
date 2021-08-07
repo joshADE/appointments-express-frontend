@@ -5,6 +5,8 @@ export interface User {
     username: string;
     email: string;
     createdAt: string;
+    avatarPublicId: string | null;
+    avatarUrl: string | null;
 }
 
 export interface UserRegisterData {
@@ -13,6 +15,7 @@ export interface UserRegisterData {
     username: string;
     password: string;
     email: string;
+    avatar: File | null;
 }
 
 export interface UserLoginData {

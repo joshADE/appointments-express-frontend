@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { PuffLoader } from 'react-spinners';
 import { Link } from 'react-router-dom'
 import { UserRegisterData } from '../../../features/user/userTypes'
@@ -9,6 +9,8 @@ import { Formik, Form } from 'formik';
 import * as yup from 'yup';
 import { FormTextInput } from "../../shared/FormElements";
 import { Button } from "../../shared/Button";
+import AvatarPhotoUploader, { PreviewFile } from '../../shared/AvatarPhotoUploader';
+import DefaultProfilePhoto from '../../../assets/profile-picture.jpg'
 
 interface RegisterProps {
   isLoading: boolean;
@@ -32,8 +34,8 @@ const Register: React.FC<RegisterProps> = ({ isLoading }) => {
     const { isFetching: allUsersFetching, data: allUsers } = useGetUsersQuery();
     const [register, { isLoading: registerLoading }] = useRegisterMutation();
     const [login, { isLoading: loginLoading }] = useLoginMutation();
-
-
+    const [photo, setPhoto] = useState<PreviewFile>()
+    const [photoWithoutPreview, setPhotoWithoutPreview] = useState<File | null>(null);
 
 
 
@@ -84,15 +86,21 @@ const Register: React.FC<RegisterProps> = ({ isLoading }) => {
             })}
             onSubmit={async (values, actions) => {
               const { email, firstName, lastName, password, username } = values;
+              const formData = new FormData();
+              
               const payload: UserRegisterData = {
                 email,
                 firstName,
                 lastName,
                 password,
                 username,
+                avatar: photoWithoutPreview
               };
+              Object.entries(payload).forEach(entry => {
+                formData.append(entry[0], entry[1]);
+              })
               try { 
-                await register(payload).unwrap();
+                await register(formData).unwrap();
                 await login({ username, password }).unwrap();
                 // authentication management is handled in the auth slice
                 // error management is also handled there aswell
@@ -104,6 +112,13 @@ const Register: React.FC<RegisterProps> = ({ isLoading }) => {
             }}
           >
             <Form>
+              <AvatarPhotoUploader 
+                name="photo"
+                handleFile={(p, pWP) => { setPhoto(p); setPhotoWithoutPreview(pWP)}}
+                defaultImg={DefaultProfilePhoto}
+                file={photo}
+                className="mx-auto w-60 h-60"
+              />
               <FormTextInput
                 label="First Name"
                 props={{ name: "firstName", type: "text", placeholder: "John" }}

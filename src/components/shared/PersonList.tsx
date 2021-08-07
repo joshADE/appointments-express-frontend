@@ -20,8 +20,8 @@ const PersonList: React.FC<PersonListProps> = ({
                     className="hidden group-hover:block absolute -top-16 text-xs w-24 bg-gray-800 text-white rounded-sm p-2 z-20"
                 >{user.firstName} {user.lastName} <br /> Since: {moment(createdAt, "YYYY-MM-DD[T]HH:mm:ss").format("L")}</div>
                 <img 
-                    className="rounded-3xl w-8 ring-white ring-2 z-10" 
-                    src={defaultPhoto} 
+                    className="rounded-3xl w-8 h-8 object-cover ring-white ring-2 z-10" 
+                    src={user.avatarUrl? user.avatarUrl : defaultPhoto} 
                     alt={user.firstName + " " + user.lastName}
                 />
             </div>)

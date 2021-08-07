@@ -36,8 +36,8 @@ export const appointmentApi = createApi({
             query: (credentials: UserLoginData) => ({ url: 'users/login', method: 'POST', body: credentials }),
             invalidatesTags: ['Store', 'User', 'Appointment']       // for the case where a user logs out of one account and immediately into another, clear cache
         }),
-        register: build.mutation<User, UserRegisterData>({
-            query: (credentials: UserRegisterData) => ({ url: 'users/register', method: 'POST', body: credentials }),
+        register: build.mutation<User, FormData>({
+            query: (credentials: FormData) => ({ url: 'users/register', method: 'POST', body: credentials }),
         }),
         loadUser: build.query<User, void>({
             query: () => ({ url: 'users/loadUser'}),
