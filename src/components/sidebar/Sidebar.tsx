@@ -1,49 +1,72 @@
 import React from 'react'
 import { NavLink, Link } from 'react-router-dom'
-import ProfileNav from '../pages/auth/ProfileNav';
 import { SidebarData } from './SidebarData'
-import * as HiIcons from 'react-icons/hi'
+import logo from '../../assets/logo.png'
+import * as FiIcons from 'react-icons/fi'
+import { connect, ConnectedProps } from 'react-redux'
+import { logout } from '../../features/auth/authSlice';
 const isActive = (path: string, match: any, location: any) => !!(match || path === location.pathname);
 
-class Sidebar extends React.Component {
+class Sidebar extends React.Component<SidebarProps, {}> {
 
     render(){
         return (
             <nav 
-                className="w-24 lg:hover:w-48 group h-full flex flex-col items-center justify-around p-0 z-10 transition-all duration-300 ease-linear border-4 border-gray-300"
+                className="w-24 lg:w-48 flex flex-col justify-center h-full p-0 z-10 border-r border-gray-300"
             >
 
                 <Link 
                     to="/"
-                    className="text-center w-12"
-                ><HiIcons.HiOutlineMenuAlt2 className="w-6 h-6 mx-auto" /></Link>
-
-                <ul
-                    className="flex flex-col items-center justify-center m-5"
-                >
-                    {SidebarData.map((item, index) => {
-                        return (
-                            <li 
-                                key={index} 
-                                className=" flex items-center justify-center rounded-lg p-2 mb-6 w-3/4 bg-white text-gray-600 hover:text-black"
+                    className="text-center h-1/6 pt-10"
+                ><img src={logo} alt="logo" className="w-20 mx-auto" /></Link>
+                <div className="flex flex-col items-center lg:items-start justify-between h-5/6 pt-10">
+                    <ul
+                        className="flex flex-col justify-center m-5"
+                    >
+                        {SidebarData.map((item, index) => {
+                            return (
+                                <li 
+                                    key={index} 
+                                    className="flex justify-center rounded-lg mb-12 w-min bg-white text-gray-600 hover:text-black"
+                                >
+                                    <NavLink exact title={item.title} className="flex" to={item.path} activeClassName="text-green-800" isActive={isActive.bind(this,item.path)}>
+                                        <span
+                                            className="text-xl mr-3 flex items-center"
+                                        >{item.icon}</span>
+                                        <span
+                                            className="text-sm truncate w-0 lg:w-32"
+                                        >{item.title}</span>
+                                    </NavLink>
+                                </li>
+                            )
+                        }, this)}
+                    </ul>
+                    <div className="flex flex-col justify-center m-5 mb-20">
+                        <div className="flex justify-center w-min bg-white text-gray-600 hover:text-black">
+                            <button
+                                onClick={() => this.props.logout()}
+                                className="flex"
                             >
-                                <NavLink exact title={item.title} className="flex" to={item.path} activeClassName="text-green-800" isActive={isActive.bind(this,item.path)}>
-                                    <span
-                                        className="text-xl mr-1 flex items-center"
-                                    >{item.icon}</span>
-                                    <span
-                                        className="text-sm truncate w-0 lg:group-hover:w-32 transition-all duration-300 ease-linear"
-                                    >{item.title}</span>
-                                </NavLink>
-                            </li>
-                        )
-                    }, this)}
-                </ul>
-
-                <ProfileNav />
+                                <FiIcons.FiLogOut 
+                                    className="text-xl mr-3 flex items-center"
+                                />
+                                <span
+                                    className="text-sm truncate w-0 lg:w-min"
+                                >Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </nav>
         )
     }
 }
 
-export default Sidebar
+const actionCreators = { 
+    logout
+}
+
+const connector = connect(null, actionCreators);
+type SidebarProps = ConnectedProps<typeof connector>;
+
+export default connector(Sidebar)
