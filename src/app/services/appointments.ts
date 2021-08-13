@@ -78,6 +78,10 @@ export const appointmentApi = createApi({
             query: (args) => ({ url: `users/appoint/${args.role}/${args.storeId}/${args.username}`, method: 'POST'}),
             invalidatesTags: ['User', 'Store']
         }),
+        unappointRole: build.mutation<void, {role: string; storeId: number; username: string}>({
+            query: (args) => ({ url: `users/unappoint/${args.role}/${args.storeId}/${args.username}`, method: 'POST'}),
+            invalidatesTags: ['User', 'Store']
+        }),
     })
 });
 
@@ -94,6 +98,7 @@ export const {
     useDeleteStoreMutation,
     useGetUsersAndRolesByStoreIdQuery,
     useAppointRoleMutation,
+    useUnappointRoleMutation,
 } = appointmentApi;
 
 
