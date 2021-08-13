@@ -3,11 +3,14 @@ import { SkewLoader } from "react-spinners";
 import {
   useGetAllUserStoresQuery,
   useGetUsersAndRolesByStoreIdQuery,
+  useUnappointRoleMutation,
 } from "../../../app/services/appointments";
 import DashboardPageHeader from "../../shared/DashboardPageHeader";
 import PersonList from "../../shared/PersonList";
 import Select from "../../shared/Select";
 import AppointRoleForm from "./AppointRoleForm";
+import { useAppSelector } from "../../../app/hooks";
+import * as CgIcons from "react-icons/cg";
 
 const ManageRole: React.FC = () => {
   const [selectedStoreIndex, setSelectedStoreIndex] = useState(-1);
@@ -17,6 +20,8 @@ const ManageRole: React.FC = () => {
     isLoading: isLoadingStores,
     error: storeError,
   } = useGetAllUserStoresQuery();
+
+  const [unappoint, { isLoading: isUnappointing }] = useUnappointRoleMutation();
 
   const storesWithoutQP = storesWithDetails
     ? storesWithDetails.filter(({ store }) => !store.isQuickProfile)
@@ -43,6 +48,28 @@ const ManageRole: React.FC = () => {
 
   const managers = usersAndRoles?.filter(({ role }) => role.name === "Manager");
   const owner = usersAndRoles?.filter(({ role }) => role.name === "Owner");
+
+  const currentUser = useAppSelector((state) => state.auth.user);
+  const currentRole = selectedStore
+    ? usersAndRoles?.find(
+        ({ user, store }) =>
+          store?.id === selectedStore.store.id && user.id === currentUser?.id
+      )?.role.name
+    : undefined;
+  const currentUserIsOwner = currentRole === "Owner";
+
+  const unAppointPerson = async (
+    role: string,
+    storeId: number,
+    username: string
+  ) => {
+    try {
+      await unappoint({ role, storeId, username }).unwrap();
+      alert("Succesfully unappointed");
+    } catch (err) {
+      alert("Failed to perform action");
+    }
+  };
 
   return (
     <div className="overflow-y-auto h-full w-11/12 font-roboto p-4 grid gap-4 grid-cols-1 md:grid-cols-4 md:grid-rows-6">
@@ -95,7 +122,33 @@ const ManageRole: React.FC = () => {
               <h3 className="font-bold text-base">Owner</h3>
               {selectedStore && owner && <PersonList people={owner} />}
               <h3 className="font-bold text-base">Managers</h3>
-              {selectedStore && managers && <PersonList people={managers} />}
+              {selectedStore && managers && (
+                <PersonList
+                  people={managers}
+                  render={(urs) => (
+                    <div className="border border-white text-white p-1 rounded-sm w-min">
+                      {" "}
+                      {currentUserIsOwner ? (
+                        <button
+                        className="text-lg p-1 hover:bg-white hover:text-black"
+                          disabled={isUnappointing}
+                          onClick={() =>
+                            unAppointPerson(
+                              urs.role.name,
+                              urs.store.id,
+                              urs.user.username
+                            )
+                          }
+                        >
+                          <CgIcons.CgUserRemove />
+                        </button>
+                      ) : (
+                        <span>Only owner can unappoint</span>
+                      )}
+                    </div>
+                  )}
+                />
+              )}
             </div>
           </div>
 
@@ -103,7 +156,7 @@ const ManageRole: React.FC = () => {
             {selectedStore ? (
               <AppointRoleForm
                 selectedStore={selectedStore}
-                usersAndRoles={usersAndRoles}
+                currentUserIsOwner={currentUserIsOwner}
               />
             ) : (
               <div className="h-full text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500">

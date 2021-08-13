@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { useAppSelector } from '../../../app/hooks';
 import { useAppointRoleMutation } from '../../../app/services/appointments';
-import { StoreWithDetails, UserAndRoleForStore } from '../../../features/store/storeTypes';
+import { StoreWithDetails } from '../../../features/store/storeTypes';
 import { Button } from "../../shared/Button";
 
 interface AppointRoleFormProps {
     selectedStore: StoreWithDetails;
-    usersAndRoles?: UserAndRoleForStore[];
+    currentUserIsOwner: boolean;
 }
 
 const AppointRoleForm: React.FC<AppointRoleFormProps> = ({
     selectedStore,
-    usersAndRoles
+    currentUserIsOwner
 }) => {
-        const currentUser = useAppSelector(state => state.auth.user);
-        const currentRole = usersAndRoles?.find(({ user, store }) => (store.id === selectedStore.store.id && user.id === currentUser?.id))?.role.name;  
         
         const [role, setRole] = useState('');
         const [username, setUsername] = useState('');
@@ -44,7 +41,7 @@ const AppointRoleForm: React.FC<AppointRoleFormProps> = ({
           <div 
             className="flex items-center flex-wrap"
           >
-            {currentRole === 'Owner'?
+            {currentUserIsOwner?
             <span className="mr-4">
             <input className="mr-2" type="radio" name="role" id="manager-radio" value="Manager" checked={role === "Manager"} onChange={e => setRole(e.target.value)} /><label htmlFor="manager-radio">Manager</label>
             </span>:
