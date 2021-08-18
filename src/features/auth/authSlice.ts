@@ -65,6 +65,14 @@ export const authSlice = createSlice({
                 state.isAuthenticated = true;
             })
             .addMatcher(appointmentApi.endpoints.loadUser.matchRejected, loggedOut)
+            .addMatcher(appointmentApi.endpoints.editAvatar.matchFulfilled, (state, action) => {
+                console.log('fulfilled', action);
+                state.user = action.payload;
+            })
+            .addMatcher(appointmentApi.endpoints.editAccount.matchFulfilled, (state, action) => {
+                console.log('fulfilled', action);
+                state.user = action.payload;
+            })
     }
 });
 

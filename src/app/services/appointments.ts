@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
-import { User, UserLoginData } from '../../features/user/userTypes';
+import { User, UserLoginData, UserEditAccountData } from '../../features/user/userTypes';
 import { StoreWithDetails, CreateStoreRequest, Store, StoreHours, UpdateClosedRequest, UserAndRoleForStore } from '../../features/store/storeTypes';
 import { converObjectToReplaceJsonPatch } from '../../features/commonTypes';
 import { baseUrl } from '../../axios';
@@ -38,6 +38,7 @@ export const appointmentApi = createApi({
         }),
         register: build.mutation<User, FormData>({
             query: (credentials: FormData) => ({ url: 'users/register', method: 'POST', body: credentials }),
+            invalidatesTags: ['Store', 'User', 'Appointment']
         }),
         loadUser: build.query<User, void>({
             query: () => ({ url: 'users/loadUser'}),
@@ -82,6 +83,14 @@ export const appointmentApi = createApi({
             query: (args) => ({ url: `users/unappoint/${args.role}/${args.storeId}/${args.username}`, method: 'POST'}),
             invalidatesTags: ['User', 'Store']
         }),
+        editAvatar: build.mutation<User, FormData>({
+            query: (formData) => ({ url: 'users/editavatar', method: 'PATCH', body: formData}),
+            invalidatesTags: ['User']
+        }),
+        editAccount: build.mutation<User, UserEditAccountData>({
+            query: (data) => ({ url: 'users/editaccount', method: 'PATCH', body: converObjectToReplaceJsonPatch(data)}),
+            invalidatesTags: ['User']
+        }),
     })
 });
 
@@ -99,9 +108,11 @@ export const {
     useGetUsersAndRolesByStoreIdQuery,
     useAppointRoleMutation,
     useUnappointRoleMutation,
+    useEditAvatarMutation,
+    useEditAccountMutation,
 } = appointmentApi;
 
 
 export const {
-    endpoints: { login, register }
+    endpoints: { login, register, editAvatar, editAccount }
 } = appointmentApi;

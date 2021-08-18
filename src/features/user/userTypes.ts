@@ -22,3 +22,7 @@ export interface UserLoginData {
     username: string;
     password: string;
 }
+
+export type UserEditAvatarData = Pick<UserRegisterData, 'avatar'>;
+
+export type UserEditAccountData = Partial<Omit<UserRegisterData, 'avatar'>>;
