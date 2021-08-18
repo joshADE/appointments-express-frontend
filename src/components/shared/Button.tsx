@@ -5,6 +5,8 @@ interface ButtonProps {
     onClick?: () => void;
     disabled?: boolean;
     className?: string;
+    outline?: boolean;
+    bare?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -12,12 +14,14 @@ export const Button: React.FC<ButtonProps> = ({
     onClick,
     disabled,
     className,
-    children
+    children,
+    outline,
+    bare
 }) => {
         return (<button
             type={type}
             disabled={disabled}
-            className={`font-bold text-sm p-1 text-gray-700 bg-gray-300 disabled:opacity-80 focus:outline-none hover:text-gray-900 w-32 h-10 ${className}`}
+            className={`font-bold text-sm p-1 text-gray-500 ${!bare && (!!outline ? 'border border-gray-300' : 'bg-gray-300')} disabled:opacity-80 focus:outline-none hover:text-gray-900 w-32 h-10 ${className}`}
             onClick={onClick}
         >{children}</button>);
 }
