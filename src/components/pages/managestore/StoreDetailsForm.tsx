@@ -349,7 +349,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                         >Save</button>}
                     </div>
                     <div className="md:w-max mr-4 relative">
-                        <h4 className="font-bold text-lg border-b border-gray-900 truncate">Closed Days / Times</h4>
+                        <h4 className="font-bold text-lg border-b border-gray-900 truncate mb-1">Closed Days / Times</h4>
                          
                         <div className="flex items-start">
                             <ClosedDaysTimesList 

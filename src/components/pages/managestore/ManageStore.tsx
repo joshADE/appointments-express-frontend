@@ -56,12 +56,14 @@ const ManageStore: React.FC = () => {
   }
 
   return (
-    <div className="overflow-y-auto h-full w-11/12 font-roboto p-4 grid gap-4 grid-cols-1 md:grid-cols-4 md:grid-rows-store-section">
-      <div className="md:col-span-3">
+    <div className="overflow-y-auto h-full w-11/12 font-roboto p-4">
         <DashboardPageHeader
           title="Manage Store and Times"
           description="Here you can open a store, manage existing stores, edit your quick store profile, set day and times for a particular store."
         />
+
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-4 border rounded-lg border-gray-500 p-5 mt-5">
+      <div className="md:col-span-4">
         {isFetching && <SkewLoader color="#333" loading={isFetching} size="20px" />}
       </div>
       {isLoading ? (
@@ -155,6 +157,7 @@ const ManageStore: React.FC = () => {
           </div>
         </>
       )}
+      </div>
     </div>
   );
 };
