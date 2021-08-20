@@ -74,7 +74,7 @@ const ManageAccount: React.FC = () => {
       <DashboardPageHeader title="Account Details" />
 
       {user ? (
-        <div className="border border-gray-400 rounded-lg p-5 mt-5">
+        <div className="border border-gray-500 rounded-lg p-5 mt-5">
           <div className="my-5">
             <AvatarPhotoUploader
               name="photo"

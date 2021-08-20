@@ -72,12 +72,13 @@ const ManageRole: React.FC = () => {
   };
 
   return (
-    <div className="overflow-y-auto h-full w-11/12 font-roboto p-4 grid gap-4 grid-cols-1 md:grid-cols-4 md:grid-rows-6">
-      <div className="md:col-span-3">
+    <div className="overflow-y-auto h-full w-11/12 font-roboto p-4">
         <DashboardPageHeader
           title="Roles"
           description="Here you can see the roles for a particaluar store and assign roles to other users."
         />
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-4 md:grid-rows-6">
+      <div className="md:col-span-4">
         {(isFetchingStores || isFetchingRoles) && (
           <SkewLoader
             color="#333"
@@ -104,7 +105,7 @@ const ManageRole: React.FC = () => {
         </div>
       ) : (
         <>
-          <div className="md:col-span-1 p-6">
+          <div className="md:col-span-4 p-6">
             <Select
               options={selectOptions}
               onChange={(e) => setSelectedStoreIndex(Number(e.target.value))}
@@ -113,7 +114,7 @@ const ManageRole: React.FC = () => {
           </div>
 
           <div className="md:col-span-2  md:row-span-3">
-            <div className="border border-black p-5 h-full">
+            <div className="border border-gray-500 rounded p-5 h-full">
               <h2 className="font-extrabold text-xl pb-3">
                 {selectedStore
                   ? selectedStore.store.name
@@ -159,13 +160,14 @@ const ManageRole: React.FC = () => {
                 currentUserIsOwner={currentUserIsOwner}
               />
             ) : (
-              <div className="h-full text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500">
+              <div className="h-full text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500 border border-gray-500">
                 Must select a store to appoint roles
               </div>
             )}
           </div>
         </>
       )}
+      </div>
     </div>
   );
 };
