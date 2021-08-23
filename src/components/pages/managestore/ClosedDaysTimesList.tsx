@@ -32,13 +32,13 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
     deleteClosed
 }) => {
     console.log('Rerendered ClosedDaysTimesList');
-        return (<div className="text-xs w-full">
+        return (<div className="text-xs max-w-xs">
             <ul className="w-full">
                 {closed.map((cdt, index) => {
                     return (
                         <li
                             key={index}
-                            className="border border-gray-700 mb-1 w-full relative"
+                            className="border-b border-gray-700 mb-1 pb-1 w-full relative"
                         >
                             <button type="button" onClick={() => deleteClosed(index)} className="font-normal text-gray-500 hover:text-gray-900 focus:outline-none absolute top-0 right-0" >
                                 <RiIcons.RiDeleteBin6Line className="text-base" />
@@ -94,7 +94,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                     )
                 })}
             </ul>
-            <button type="button" onClick={addClosed} className="border w-full border-black">New closed day/time</button>
+            <button type="button" onClick={addClosed} className="border-t border-b w-full border-black">New closed day/time</button>
         </div>);
 }
 
