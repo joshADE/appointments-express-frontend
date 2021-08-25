@@ -91,6 +91,10 @@ export const appointmentApi = createApi({
             query: (data) => ({ url: 'users/editaccount', method: 'PATCH', body: converObjectToReplaceJsonPatch(data)}),
             invalidatesTags: ['User']
         }),
+        deleteAccount: build.mutation<User, void>({
+            query: () => ({ url: 'users/deleteaccount', method: 'DELETE'}),
+            invalidatesTags: ['User', 'Store', 'Appointment']
+        }),
     })
 });
 
@@ -110,6 +114,7 @@ export const {
     useUnappointRoleMutation,
     useEditAvatarMutation,
     useEditAccountMutation,
+    useDeleteAccountMutation,
 } = appointmentApi;
 
 
