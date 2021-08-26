@@ -119,5 +119,5 @@ export const {
 
 
 export const {
-    endpoints: { login, register, editAvatar, editAccount }
+    endpoints: { login, register, editAvatar, editAccount, deleteAccount }
 } = appointmentApi;

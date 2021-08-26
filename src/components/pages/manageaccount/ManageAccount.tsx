@@ -5,6 +5,7 @@ import {
   useGetUsersQuery,
   useEditAvatarMutation,
   useEditAccountMutation,
+  useDeleteAccountMutation,
 } from "../../../app/services/appointments";
 import AvatarPhotoUploader, {
   PreviewFile,
@@ -33,6 +34,7 @@ const ManageAccount: React.FC = () => {
   const [editAvatar, { isLoading: isEditingAvatar }] = useEditAvatarMutation();
   const [editAccount, { isLoading: isEditingAccount }] =
     useEditAccountMutation();
+  const [deleteAccount, { isLoading: isDeletingAccount }] = useDeleteAccountMutation();
   const { user } = useAppSelector((state) => state.auth);
   const [photo, setPhoto] = useState<PreviewFile>();
   const [photoWithoutPreview, setPhotoWithoutPreview] = useState<File | null>(
@@ -69,6 +71,18 @@ const ManageAccount: React.FC = () => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    const response = window.confirm("Are you sure you want to delete your account?");
+    if (!response) return;
+
+    try {
+      await deleteAccount().unwrap();
+      alert("Successfully deleted account. Logging out...");
+      // logging out is handled in the auth slice
+    } catch (err) { 
+      alert("Failed to delete account");
+    }
+  }
   return (
     <div className="overflow-y-auto h-full w-11/12 font-roboto p-4">
       <DashboardPageHeader title="Account Details" />
@@ -224,6 +238,14 @@ const ManageAccount: React.FC = () => {
                     >
                       Reset Changes
                     </Button>
+                    <button
+                      type="button"
+                      disabled={isDeletingAccount}
+                      className="mr-2 mb-2 font-bold text-sm p-1 disabled:opacity-80 focus:outline-none w-32 h-10 border border-red-500 text-red-500 bg-red-100 hover:text-red-700"
+                      onClick={handleDeleteAccount}
+                    >
+                      Delete Account
+                    </button>
                   </div>
                 </div>
               </Form>

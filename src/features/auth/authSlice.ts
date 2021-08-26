@@ -73,6 +73,7 @@ export const authSlice = createSlice({
                 console.log('fulfilled', action);
                 state.user = action.payload;
             })
+            .addMatcher(appointmentApi.endpoints.deleteAccount.matchFulfilled, loggedOut)
     }
 });
 
