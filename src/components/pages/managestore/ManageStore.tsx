@@ -45,7 +45,8 @@ const ManageStore: React.FC = () => {
     setOverrides(newOverrides);
   };
 
-  const handleDeleteStore = async (id: number) => {
+  const handleDeleteStore = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: number) => {
+    e.stopPropagation(); // the delete button is inside the select store button, so don't propagate the click event to the select button
     try {
       const store = await deleteStore(id).unwrap();
       alert(`Successfully deleted store: ${store.name}`);
@@ -137,7 +138,7 @@ const ManageStore: React.FC = () => {
                         </div>
                         {role.name === 'Owner' &&
                         <div className="flex flex-col justify-center items-center">
-                          <button className="font-normal text-gray-500 hover:text-gray-900 focus:outline-none" disabled={isDeleting} onClick={() => handleDeleteStore(store.id)}><RiIcons.RiDeleteBin6Line /></button>
+                          <button className="font-normal text-gray-500 hover:text-gray-900 focus:outline-none" disabled={isDeleting} onClick={(e) => handleDeleteStore(e, store.id)}><RiIcons.RiDeleteBin6Line /></button>
                         </div>}
                       </button>
                     </li>
