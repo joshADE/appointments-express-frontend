@@ -107,6 +107,9 @@ const Register: React.FC<RegisterProps> = ({ isLoading }) => {
                 actions.resetForm();
               }catch (err) {
                 console.log(err)
+                if (err.data?.errors){
+                  alert(err.data.errors);
+                }
               }
                   
             }}
