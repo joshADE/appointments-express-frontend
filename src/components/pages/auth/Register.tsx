@@ -65,6 +65,7 @@ const Register: React.FC<RegisterProps> = ({ isLoading }) => {
                 .min(2, "last name must be at least 2 characters"),
               username: yup
                 .string()
+                .transform((curr) => (curr as string).toLowerCase())
                 .required()
                 .min(2)
                 .not(
@@ -77,6 +78,7 @@ const Register: React.FC<RegisterProps> = ({ isLoading }) => {
                 .oneOf([yup.ref("password"), null], "passwords must match"),
               email: yup
                 .string()
+                .transform((curr) => (curr as string).toLowerCase())
                 .email()
                 .required()
                 .not(

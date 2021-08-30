@@ -132,6 +132,7 @@ const ManageAccount: React.FC = () => {
                 .min(2, "last name must be at least 2 characters"),
               username: yup
                 .string()
+                .transform((curr) => (curr as string).toLowerCase())
                 .min(2)
                 .not(
                   allUsers ? allUsers.map((u) => u.username) : [],
@@ -143,6 +144,7 @@ const ManageAccount: React.FC = () => {
                 .oneOf([yup.ref("password"), null], "passwords must match"),
               email: yup
                 .string()
+                .transform((curr) => (curr as string).toLowerCase())
                 .email()
                 .not(
                   allUsers ? allUsers.map((u) => u.email) : [],
@@ -174,7 +176,11 @@ const ManageAccount: React.FC = () => {
                 alert("Successfully edited account");
                 actions.resetForm();
               } catch (err) {
-                alert("Failed to edit account");
+                let message = "Failed to edit account. ";
+                if (err.data?.errors){
+                  message = message + err.data.errors;
+                }
+                alert(message);
               }
             }}
           >
