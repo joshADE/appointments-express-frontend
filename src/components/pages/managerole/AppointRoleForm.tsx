@@ -35,7 +35,7 @@ const AppointRoleForm: React.FC<AppointRoleFormProps> = ({
         }
 
         return (
-        <form className="border border-gray-500 rounded p-5 h-full" onSubmit={handleSubmit}>
+        <form className="h-full" onSubmit={handleSubmit}>
           <h2 className="font-extrabold text-xl pb-3">Appoint Role</h2>
           <h3 className="font-bold text-base">Role</h3>
           <div 

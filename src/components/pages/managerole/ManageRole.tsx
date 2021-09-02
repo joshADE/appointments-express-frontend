@@ -105,7 +105,7 @@ const ManageRole: React.FC = () => {
         </div>
       ) : (
         <>
-          <div className="md:col-span-4 p-6">
+          <div className="md:col-span-4 bg-white rounded-lg shadow p-5">
             <Select
               options={selectOptions}
               onChange={(e) => setSelectedStoreIndex(Number(e.target.value))}
@@ -113,8 +113,8 @@ const ManageRole: React.FC = () => {
             />
           </div>
 
-          <div className="md:col-span-2  md:row-span-3">
-            <div className="border border-gray-500 rounded p-5 h-full">
+          <div className="md:col-span-2  md:row-span-3 bg-white rounded-lg shadow p-5">
+            <div className="h-full">
               <h2 className="font-extrabold text-xl pb-3">
                 {selectedStore
                   ? selectedStore.store.name
@@ -153,14 +153,14 @@ const ManageRole: React.FC = () => {
             </div>
           </div>
 
-          <div className="md:col-span-2  md:row-span-3">
+          <div className="md:col-span-2  md:row-span-3 bg-white rounded-lg shadow p-5">
             {selectedStore ? (
               <AppointRoleForm
                 selectedStore={selectedStore}
                 currentUserIsOwner={currentUserIsOwner}
               />
             ) : (
-              <div className="h-full text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500 border border-gray-500">
+              <div className="h-full text-center p-5 text-xs text-gray-500">
                 Must select a store to appoint roles
               </div>
             )}

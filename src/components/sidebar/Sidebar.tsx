@@ -12,7 +12,7 @@ class Sidebar extends React.Component<SidebarProps, {}> {
     render(){
         return (
             <nav 
-                className="w-24 lg:w-48 flex flex-col justify-center h-full p-0 z-10 border-2 border-gray-300 rounded-r-lg"
+                className="w-24 lg:w-48 flex flex-col justify-center h-full p-0 z-10 rounded-lg bg-white shadow"
             >
 
                 <Link 

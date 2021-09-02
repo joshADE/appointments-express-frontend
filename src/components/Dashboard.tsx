@@ -9,7 +9,7 @@ import Sidebar from './sidebar/Sidebar';
 const Dashboard : React.FC<RouteComponentProps> = ({ match }) => {
     return (
         <div
-            className="w-screen h-screen flex"
+            className="w-screen h-screen flex p-3 bg-gray-100"
         >
             <Sidebar />
             

@@ -63,7 +63,7 @@ const ManageStore: React.FC = () => {
           description="Here you can open a store, manage existing stores, edit your quick store profile, set day and times for a particular store."
         />
 
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-4 border rounded-lg border-gray-500 p-5 mt-5">
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-4 mt-5">
       <div className="md:col-span-4">
         {isFetching && <SkewLoader color="#333" loading={isFetching} size="20px" />}
       </div>
@@ -78,7 +78,7 @@ const ManageStore: React.FC = () => {
         </div>
       ) : (
         <>
-          <div className="md:col-span-3">
+          <div className="md:col-span-3 bg-white rounded-lg shadow p-5">
             <StoreDetailsForm
               isQuickProfile
               storeDetails={
@@ -90,7 +90,7 @@ const ManageStore: React.FC = () => {
               tranferOverrides={tranferOverrides}
             />
           </div>
-          <div className="md:col-span-1 md:row-span-3">
+          <div className="md:col-span-1 md:row-span-3 bg-white rounded-lg shadow p-5">
             <div className="max-w-xs">
               <div className="font-thin border-b-4 border-black pb-4 mb-4">
                 <h3 className="text-lg">Stores</h3>
@@ -147,7 +147,7 @@ const ManageStore: React.FC = () => {
               </ul>
             </div>
           </div>
-          <div className="md:col-span-3">
+          <div className="md:col-span-3 bg-white rounded-lg shadow p-5">
             <StoreDetailsForm
               isQuickProfile={false}
               storeDetails={selectedStore}

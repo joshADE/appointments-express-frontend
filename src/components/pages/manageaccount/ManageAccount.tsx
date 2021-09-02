@@ -88,7 +88,7 @@ const ManageAccount: React.FC = () => {
       <DashboardPageHeader title="Account Details" />
 
       {user ? (
-        <div className="border border-gray-500 rounded-lg p-5 mt-5">
+        <div className="mt-5 bg-white rounded-lg shadow p-5">
           <div className="my-5">
             <AvatarPhotoUploader
               name="photo"
@@ -259,7 +259,7 @@ const ManageAccount: React.FC = () => {
           </Formik>
         </div>
       ) : (
-        <div className="text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500">
+        <div className="text-center p-5 text-xs text-gray-500">
           Error loading user data
         </div>
       )}
