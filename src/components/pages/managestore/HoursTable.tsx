@@ -25,7 +25,7 @@ const HoursTable: React.FC<HoursTableProps> = ({
         
 
         return (
-        <table className="font-roboto text-xs font-normal table-auto border-collapse inline-block">
+        <table className="font-roboto text-xs font-normal table-auto border-collapse inline-block mt-2">
             <thead>
                 <tr>
                     <th key="-1">{' '}</th>
@@ -41,7 +41,7 @@ const HoursTable: React.FC<HoursTableProps> = ({
                     <th key="isOpen-1">isOpen?</th>
                     {columns.map(value => {
                         return (
-                            <td className="w-10" key={"isOpen" + value}>
+                            <td className="w-10 py-3" key={"isOpen" + value}>
                                 <Checkbox
                                     checked={hours[value] && hours[value].isOpen !== undefined? hours[value].isOpen:false}
                                     onChange={(e) => onChangeOpenOrClose(value, e)}
@@ -55,7 +55,7 @@ const HoursTable: React.FC<HoursTableProps> = ({
                     <th key="open-1">open</th>
                     {columns.map(value => {
                         return (
-                            <td className="relative" key={"open" + value}>
+                            <td className="relative py-3" key={"open" + value}>
                                 
                                 <TimeInput 
                                     time={hours[value] && hours[value].open !== undefined? hours[value].open:"--:--:--"}
@@ -71,7 +71,7 @@ const HoursTable: React.FC<HoursTableProps> = ({
                     <th key="close-1">close</th>
                     {columns.map(value => {
                         return (
-                            <td className="relative" key={"close" + value}>
+                            <td className="relative py-3" key={"close" + value}>
                                 <TimeInput 
                                     time={hours[value] && hours[value].close !== undefined? hours[value].close:"--:--:--"}
                                     disabled={!hours[value]?.isOpen}

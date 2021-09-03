@@ -38,12 +38,12 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                     return (
                         <li
                             key={index}
-                            className="border-b border-gray-700 mb-1 pb-1 w-full relative"
+                            className={`${index !== closed.length - 1 ? 'border-b': ''} border-gray-700 mb-1 pb-1 w-full relative`}
                         >
                             <button type="button" onClick={() => deleteClosed(index)} className="font-normal text-gray-500 hover:text-gray-900 focus:outline-none absolute top-0 right-0" >
                                 <RiIcons.RiDeleteBin6Line className="text-base" />
                             </button>
-                            <div>
+                            <div className="mb-2">
                                 <label htmlFor="fromField">From: </label>
                                 <Datetime 
                                     value={moment(cdt.from,'YYYY-MM-DD[T]HH:mm:ss')}
@@ -57,7 +57,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                                     value={cdt.from}
                                 /> */}
                             </div>
-                            <div>
+                            <div className="mb-2">
                                 <label htmlFor="toField">To: </label>
                                 <Datetime 
                                     value={moment(cdt.to,'YYYY-MM-DD[T]HH:mm:ss')}
@@ -71,14 +71,14 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                                     value={cdt.to}
                                 /> */}
                             </div>
-                            <div>
+                            <div className="mb-2">
                                 <label>Repeat: </label>
                                 <Checkbox
                                     checked={cdt.repeat}
                                     onChange={e => onChangeRepeat(index, e)}
                                 />
                             </div>
-                            <div>
+                            <div className="mb-2">
                                 <label htmlFor="intervalField">Repeat Interval: </label>
                                 <select
                                     id="intervalField"
