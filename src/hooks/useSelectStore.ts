@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useGetAllUserStoresQuery } from "../app/services/appointments";
 
 export const useSelectStore = (initialSelectedStoreIndex: number) => {
@@ -8,11 +8,14 @@ export const useSelectStore = (initialSelectedStoreIndex: number) => {
       ...rest
     } = useGetAllUserStoresQuery();
   
-    const storesWithoutQP = storesWithDetails
+    const storesWithoutQP = useMemo(() => storesWithDetails
     ? storesWithDetails.filter(({ store }) => !store.isQuickProfile)
-    : [];
-  const selectedStore =
-    selectedStoreIndex > -1 ? storesWithoutQP[selectedStoreIndex] : undefined;
+    : []
+    , [storesWithDetails]);
+  const selectedStore = useMemo(() => 
+    selectedStoreIndex > -1 ? storesWithoutQP[selectedStoreIndex] 
+    : undefined
+    , [storesWithoutQP, selectedStoreIndex]);
   
     const selectOptions = storesWithoutQP.map(({ store }, index) => ({
       label: store.name,
