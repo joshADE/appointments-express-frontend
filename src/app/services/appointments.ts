@@ -48,6 +48,10 @@ export const appointmentApi = createApi({
             query: () => ({ url: 'users'}),
             providesTags: (result) => providesList(result?.map(({ id }) => ({id})), 'User'),
         }),
+        getStores: build.query<Store[], void>({
+            query: () => ({ url: 'stores'}),
+            providesTags: (result) => providesList(result?.map(({ id }) => ({id})), 'Store'),
+        }),
         getAllUserStores: build.query<StoreWithDetails[], void>({
             query: () => ({ url: 'stores/userstores' }),
             providesTags: (result) => providesList(result?.map(({ store: { id } }) => ({id})), 'Store'),
@@ -108,6 +112,7 @@ export const {
     useRegisterMutation,
     useLoadUserQuery,
     useGetUsersQuery,
+    useGetStoresQuery,
     useGetAllUserStoresQuery,
     useCreateStoreMutation,
     useEditStoreInfoMutation,
