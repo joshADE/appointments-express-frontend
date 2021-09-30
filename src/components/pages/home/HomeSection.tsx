@@ -1,4 +1,5 @@
 import React, { memo, useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { useGetStoresQuery } from '../../../app/services/appointments';
 import * as VscIcons from 'react-icons/vsc'
 import * as RiIcons from 'react-icons/ri'
@@ -35,7 +36,7 @@ const HomeSection: React.FC = () => {
                                     stores
                                     .filter(({name}) => name.toLocaleLowerCase().includes(filterTerm.toLocaleLowerCase()))
                                     .map(({name, id, location}, index, arr) => (index < 5 &&
-                                    <button key={id} className={`p-1 text-left hover:bg-green-200 focus:outline-none border border-black ${index === arr.length - 1 || index === 4? 'rounded-b-lg' : ''} ${index !== 0? '': 'rounded-t-lg'}`}>
+                                    <Link to={`/store/${id}/createappointment`} key={id} className={`p-1 text-left hover:bg-green-200 focus:outline-none border border-black ${index === arr.length - 1 || index === 4? 'rounded-b-lg' : ''} ${index !== 0? '': 'rounded-t-lg'}`}>
                                         <div className="flex">
                                             <RiIcons.RiStoreLine className="mr-2" />
                                             <span className="truncate">
@@ -48,7 +49,7 @@ const HomeSection: React.FC = () => {
                                                 {location}
                                             </span>
                                         </div>
-                                    </button>))}
+                                    </Link>))}
                                 </div>
                             </div>
                             

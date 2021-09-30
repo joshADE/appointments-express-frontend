@@ -55,6 +55,12 @@ export interface StoreWithDetails {
     closedDaysTimes: ClosedDaysTimes[];
 }
 
+export interface StoreAndTimes {
+    store: Store;
+    storeHours: StoreHours[];
+    closedDaysTimes: ClosedDaysTimes[]; 
+}
+
 export interface CreateStoreRequest {
     store: Partial<Store>;
     storeHours: Partial<StoreHours>[];

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
 import { User, UserLoginData, UserEditAccountData } from '../../features/user/userTypes';
-import { StoreWithDetails, CreateStoreRequest, Store, StoreHours, UpdateClosedRequest, UserAndRoleForStore } from '../../features/store/storeTypes';
+import { StoreWithDetails, CreateStoreRequest, Store, StoreHours, UpdateClosedRequest, UserAndRoleForStore, StoreAndTimes } from '../../features/store/storeTypes';
 import { converObjectToReplaceJsonPatch } from '../../features/commonTypes';
 import { baseUrl } from '../../axios';
 import { Appointment } from '../../features/appointment/appointmentTypes';
@@ -55,6 +55,10 @@ export const appointmentApi = createApi({
         getAllUserStores: build.query<StoreWithDetails[], void>({
             query: () => ({ url: 'stores/userstores' }),
             providesTags: (result) => providesList(result?.map(({ store: { id } }) => ({id})), 'Store'),
+        }),
+        getStoreAndTimes: build.query<StoreAndTimes, number>({
+            query: (id) => ({ url: `stores/storeandtimes/${id}` }),
+            providesTags: (result, error, args) => [{ type: 'Store', id: args }]
         }),
         createStore: build.mutation<StoreWithDetails, CreateStoreRequest>({
             query: (newStore: CreateStoreRequest) => ({ url: 'stores/createstore', method: 'POST', body: newStore }),
@@ -114,6 +118,7 @@ export const {
     useGetUsersQuery,
     useGetStoresQuery,
     useGetAllUserStoresQuery,
+    useGetStoreAndTimesQuery,
     useCreateStoreMutation,
     useEditStoreInfoMutation,
     useEditStoreHoursMutation,

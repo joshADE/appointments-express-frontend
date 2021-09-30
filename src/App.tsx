@@ -10,6 +10,7 @@ import { selectIsAuthenticated } from './features/auth/authSlice'
 import { useLoadUserQuery } from './app/services/appointments';
 import Login from './components/pages/auth/Login';
 import UnprotectedRoute from './components/pages/auth/UnprotectedRoute';
+import CreateAppointment from './components/pages/createappointment/CreateAppointment';
 
 const App: React.FC = () => {
   
@@ -31,7 +32,7 @@ const App: React.FC = () => {
             <Login isLoading={isLoading} />
           </UnprotectedRoute>
           <ProtectedRoute path="/dashboard" component={Dashboard} authenticationPath='/login' isAuthenticated={isAuthenticated} />
-          {/* <Route path="/dashboard" component={Dashboard} /> */}
+          <Route path="/store/:id/createappointment" component={CreateAppointment} />
           <Route path="*" component={() => <>Page Not Found</>} />
         </Switch>
       </div>
