@@ -16,6 +16,7 @@ import { Appointment } from '../../../features/appointment/appointmentTypes';
 import moment from 'moment';
 import { SkewLoader } from 'react-spinners';
 import { ClosedDaysTimes, StoreHours } from '../../../features/store/storeTypes';
+// import AppointmentDetailsForm from '../../shared/AppointmentDetailsForm';
 
 const generateEvent = (eventDetails: EventDetails): Events => {
   const id = String(Math.random())
@@ -165,7 +166,7 @@ const ManageAppointment: React.FC = () => {
                       newEventsAddedTo='dynamic'
                       hours={hours}
                       closedDaysTimes={closedDaysTimes}
-                      // onEventClick={(index) => setSelectedAppointmentId(index[0])}
+                      onEventClick={(index) => setSelectedAppointmentId(index[0])}
                       minTimeBlock={selectedStore.store.minTimeBlock}
                       maxTimeBlock={selectedStore.store.maxTimeBlock}
                     /> : 
@@ -174,12 +175,13 @@ const ManageAppointment: React.FC = () => {
                     </div>}
                 </div>
                 <div className={`${selectedAppointmentId !== null? 'h-3/6': 'h-1/6'} transition-all duration-500 ease-out bg-white rounded-lg shadow p-5 overflow-auto`}>
-                    <button onClick={() => {
-                      if (!selectedAppointmentId) 
-                        setSelectedAppointmentId('123'); 
-                      else 
-                        setSelectedAppointmentId(null);
-                      }}>Click me</button>
+                    {/* <AppointmentDetailsForm 
+                      setSelectedAppointmentId={setSelectedAppointmentId}
+                      appointments={storeAppointments}
+                      selectedAppointmentId={selectedAppointmentId}
+                      readonly
+                      statusVisible
+                    /> */}
                 </div>
                 </>
               )}

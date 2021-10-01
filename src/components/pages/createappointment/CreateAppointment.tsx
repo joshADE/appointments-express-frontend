@@ -1,16 +1,19 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
-import React, { useMemo, useState } from 'react'
+import moment from 'moment';
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { SkewLoader } from 'react-spinners';
 import { ClosedDaysTimes, EventDetails, Events, Hours } from 'react-week-schedulr';
 import { useGetAllStoreAppointmentsQuery, useGetStoreAndTimesQuery } from '../../../app/services/appointments';
+import { Appointment, AppointmentStatus } from '../../../features/appointment/appointmentTypes';
+import AppointmentDetailsForm from '../../shared/AppointmentDetailsForm';
 import Scheduler from '../../shared/Scheduler';
-import { convertStoreClosedToSchedulerClosed, convertStoreHoursToSchedulerHours } from '../manageappointment/ManageAppointment';
+import { convertArrayAppointmentsToEvents, convertStoreClosedToSchedulerClosed, convertStoreHoursToSchedulerHours } from '../manageappointment/ManageAppointment';
 import Instructions from './Instructions';
 
 const generateEvent = (eventDetails: EventDetails): Events => {
     const id = String(-1)
-    return { [id]: { ...eventDetails, title: 'newEvent ' + id } }
+    return { [id]: { ...eventDetails, title: 'New Appointment', desc: "" } }
 }
   
 
@@ -30,6 +33,8 @@ const CreateAppointment: React.FC = () => {
         error: appointmentsError
     } = useGetAllStoreAppointmentsQuery(numberId, { skip: isNaN(numberId) });
 
+
+
     const hours = useMemo<Hours>(() => { 
         if (storeAndTimes)
           return convertStoreHoursToSchedulerHours(storeAndTimes.storeHours);
@@ -47,8 +52,46 @@ const CreateAppointment: React.FC = () => {
     const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null);
     const [dynamicEvents, setDynamicEvents] = useState<Events>({}) // events that can be moved/deleted
     const [staticEvents, setStaticEvents] = useState<Events>({}) // events that can't be move/deleted
-
     
+    useEffect(() => {
+        if (appointments){
+            setStaticEvents(convertArrayAppointmentsToEvents(appointments));
+        }
+    }, [appointments])
+
+    const updateAppointmentDetails = (values: {
+        id: string | null;
+        title: string | undefined;
+        desc: string | undefined;
+        start: Date;
+        end: Date;
+        status: AppointmentStatus | undefined;
+    }) => {
+        const { id, title, desc  } = values;
+        // only updating the event/appointment with the id of -1
+        if (id === '-1'){
+            setDynamicEvents((curr) => ({...curr, [id]: {...curr[id], desc, title  }}));
+            alert("Appointment details updated")
+        }else {
+            alert("Cannot update the details for that appointment");
+        }
+    }
+
+    const saveNewAppointment =  () => {
+        const { title, desc, range } = dynamicEvents['-1'];
+        const newAppointment: Partial<Appointment> = { 
+            description: desc, 
+            title, 
+            status: AppointmentStatus.pending, 
+            storeId: numberId, 
+            start: moment(range[0]).format("YYYY-MM-DD[T]HH:mm:ss"),
+            end: moment(range[1]).format("YYYY-MM-DD[T]HH:mm:ss"),
+        }
+        alert("Saving to the database " + JSON.stringify(newAppointment));
+    }
+    
+
+    const allEvents = useMemo<Events>(() => ({...staticEvents, ...dynamicEvents}), [staticEvents, dynamicEvents]);
 
         return (
         <div className="overflow-y-auto h-screen font-roboto p-4 bg-gray-100">
@@ -89,6 +132,7 @@ const CreateAppointment: React.FC = () => {
                             <button 
                                 className="border-green-900 border disabled:opacity-50 bg-green-600 text-white rounded focus:outline-none py-3 px-6 mr-5"
                                 disabled={dynamicEvents['-1'] === undefined}
+                                onClick={saveNewAppointment}
                             >
                                 Accept
                             </button>
@@ -112,15 +156,18 @@ const CreateAppointment: React.FC = () => {
                                 closedDaysTimes={closedDaysTimes}
                                 minTimeBlock={storeAndTimes.store.minTimeBlock}
                                 maxTimeBlock={storeAndTimes.store.maxTimeBlock}
+                                onEventClick={(index) => setSelectedAppointmentId(index[0])}
                                 />
                             </div>
                             <div className={`${selectedAppointmentId !== null? 'h-3/6': 'h-1/6'} transition-all duration-500 ease-out bg-white rounded-lg shadow p-5 overflow-auto`}>
-                                <button onClick={() => {
-                                if (!selectedAppointmentId) 
-                                    setSelectedAppointmentId('123'); 
-                                else 
-                                    setSelectedAppointmentId(null);
-                                }}>Click me</button>
+                                <AppointmentDetailsForm
+                                    appointments={appointments} 
+                                    updateAppointment={updateAppointmentDetails}
+                                    events={allEvents}
+                                    selectedAppointmentId={selectedAppointmentId}
+                                    setSelectedAppointmentId={setSelectedAppointmentId}
+                                    hiddenDetails={selectedAppointmentId !== null && staticEvents[selectedAppointmentId] !== undefined}
+                                />
                             </div>
                         </div>
                     </div>}
