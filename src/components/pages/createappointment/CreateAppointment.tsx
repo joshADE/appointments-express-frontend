@@ -7,9 +7,11 @@ import { ClosedDaysTimes, EventDetails, Events, Hours } from 'react-week-schedul
 import { useGetAllStoreAppointmentsQuery, useGetStoreAndTimesQuery } from '../../../app/services/appointments';
 import { Appointment, AppointmentStatus } from '../../../features/appointment/appointmentTypes';
 import AppointmentDetailsForm from '../../shared/AppointmentDetailsForm';
+import Modal from '../../shared/Modal';
 import Scheduler from '../../shared/Scheduler';
 import { convertArrayAppointmentsToEvents, convertStoreClosedToSchedulerClosed, convertStoreHoursToSchedulerHours } from '../manageappointment/ManageAppointment';
 import Instructions from './Instructions';
+import { RiMailSendLine } from 'react-icons/ri'
 
 const generateEvent = (eventDetails: EventDetails): Events => {
     const id = String(-1)
@@ -52,7 +54,8 @@ const CreateAppointment: React.FC = () => {
     const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null);
     const [dynamicEvents, setDynamicEvents] = useState<Events>({}) // events that can be moved/deleted
     const [staticEvents, setStaticEvents] = useState<Events>({}) // events that can't be move/deleted
-    
+    const [modalOpen, setModalOpen] = useState(false);
+    const [email, setEmail] = useState("");
     useEffect(() => {
         if (appointments){
             setStaticEvents(convertArrayAppointmentsToEvents(appointments));
@@ -77,7 +80,12 @@ const CreateAppointment: React.FC = () => {
         }
     }
 
-    const saveNewAppointment =  () => {
+    const openSaveNewAppointmentModal =  () => {
+        setModalOpen(true);
+    }
+    
+    const saveAndSendAppointment = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         const { title, desc, range } = dynamicEvents['-1'];
         const newAppointment: Partial<Appointment> = { 
             description: desc, 
@@ -87,7 +95,10 @@ const CreateAppointment: React.FC = () => {
             start: moment(range[0]).format("YYYY-MM-DD[T]HH:mm:ss"),
             end: moment(range[1]).format("YYYY-MM-DD[T]HH:mm:ss"),
         }
-        alert("Saving to the database " + JSON.stringify(newAppointment));
+        const domain = window.location.href.replace(window.location.pathname, "");
+        alert("Saving to the database " + JSON.stringify(newAppointment) + " and sending email to " + email + " " + domain);
+        setModalOpen(false);
+        
     }
     
 
@@ -122,8 +133,17 @@ const CreateAppointment: React.FC = () => {
                 {!storeAndTimes || !appointments ? 
                     <div className="h-full w-full text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500 whitespace-pre-wrap">
                         That store might not exist. Try a different store
-                    </div>: 
+                    </div>:
+                    storeAndTimes.store.isQuickProfile ?
+                    <div className="h-full w-full text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500 whitespace-pre-wrap">
+                        That store is a Quick Profile and cannot have appointments scheduled.
+                    </div>:
+                    <>
+                    
+                    
                     <div className="h-full w-full flex flex-col md:grid md:grid-cols-8 md:grid-rows-6 gap-4">
+                        
+
                         <div className="md:col-span-4 md:row-span-1 font-oswald">
                             <h1 className="text-2xl">Create Appointment</h1>
                             <h2 className="text-base text-gray-500">For: {storeAndTimes.store.name}</h2>
@@ -132,7 +152,7 @@ const CreateAppointment: React.FC = () => {
                             <button 
                                 className="border-green-900 border disabled:opacity-50 bg-green-600 text-white rounded focus:outline-none py-3 px-6 mr-5"
                                 disabled={dynamicEvents['-1'] === undefined}
-                                onClick={saveNewAppointment}
+                                onClick={openSaveNewAppointmentModal}
                             >
                                 Accept
                             </button>
@@ -170,7 +190,19 @@ const CreateAppointment: React.FC = () => {
                                 />
                             </div>
                         </div>
-                    </div>}
+                    </div>
+                    {modalOpen && 
+                    <Modal setModalOpen={setModalOpen} title="Enter your email:" bodyText="An email will be sent to you to allow you to view the appointment status.">
+                        <form className="text-gray-500 flex flex-col justify-center items-center" onSubmit={saveAndSendAppointment}>
+                            <input className="text-black border-b border-gray-500 focus:outline-none" type="email" required name="email" placeholder="johndoe@email.com" value={email} onChange={e => setEmail(e.target.value)}  />
+                            <button type="submit" className="border border-gray-500 hover:bg-gray-500 hover:text-white rounded-md my-2" >
+                                <RiMailSendLine className="inline-block mx-1" /> 
+                                <span className="inline-block mx-1">Send</span>
+                            </button>
+                        </form>
+                    </Modal>}
+                    
+                    </>}
             </div>)}
         </div>);
 }
