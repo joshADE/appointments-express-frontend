@@ -18,7 +18,6 @@ interface AppointmentDetailsFormProps {
     updateAppointment: (values: { id: string | null; title: string | undefined; desc: string | undefined; start: Date; end: Date; status: AppointmentStatus | undefined; }) => void;
     events: Events;
     readonly?: boolean;
-    statusVisible?: boolean;
     setSelectedAppointmentId: (value: React.SetStateAction<string | null>) => void;
     selectedAppointmentId: string | null;
     hiddenDetails?: boolean;
@@ -28,7 +27,6 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
     appointments,
     updateAppointment,
     readonly,
-    statusVisible,
     hiddenDetails,
     setSelectedAppointmentId,
     selectedAppointmentId,
@@ -39,7 +37,7 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
         const appointment = selectedAppointmentId? appointments?.find(app => app.id === Number(selectedAppointmentId)) : undefined;
         const status = appointment ? appointment.status : undefined;
         return (
-        <div className="h-full overflow-y-auto relative">
+        <div className="h-full relative">
             {appointmentEventDetails !== undefined &&
             <button 
                 className="absolute top-0 right-0 rounded-xl bg-gray-200 p-2 focus:outline-none hover:bg-gray-400 hover:text-white" 
@@ -50,7 +48,7 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
             {appointmentEventDetails !== undefined ?
             <Formik
             enableReinitialize
-            initialValues={{ title: appointmentEventDetails.title, desc: appointmentEventDetails.desc, start: appointmentEventDetails.range[0], end: appointmentEventDetails.range[1], status }}
+            initialValues={{ title: hiddenDetails? "Hidden" : appointmentEventDetails.title, desc: hiddenDetails? "Hidden" : appointmentEventDetails.desc, start: appointmentEventDetails.range[0], end: appointmentEventDetails.range[1], status }}
             validationSchema={yup.object({
               title: yup
                 .string()
@@ -76,6 +74,7 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
                 <div className="grid grid-cols-1 lg:grid-cols-2 pt-5">
                   <FormTextInput
                     label="Title"
+                    disabled={hiddenDetails || readonly}
                     props={{
                       name: "title",
                       type: "text",
@@ -83,6 +82,7 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
                   />
                   <FormTextInput
                     label="Description"
+                    disabled={hiddenDetails || readonly}
                     props={{
                       name: "desc",
                       type: "text",
@@ -98,13 +98,13 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
                     disabled
                     props={{ name: "end", type: "text" }}
                   />
-                {status !== undefined && 
+                {(status !== undefined && !hiddenDetails ) && 
                 <FormSelect
                     label="Status"
                     props={{ name: "status" }}
                     options={statusOptions}
                   />}
-                  
+                  {!hiddenDetails && 
                   <div className="lg:col-span-2 flex justify-center items-center py-3 flex-col lg:flex-row">
                     <Button
                       type="submit"
@@ -120,7 +120,7 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
                     >
                       Reset Changes
                     </Button>
-                  </div>
+                  </div>}
                 </div>
               </Form>
             )}

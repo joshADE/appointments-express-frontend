@@ -6,7 +6,8 @@ import {
     EventDetails,
     Events,
     Hours,
-    ClosedDaysTimes
+    ClosedDaysTimes,
+    EventContentProps
 } from 'react-week-schedulr';
 
 interface SchedulerProps {
@@ -22,6 +23,8 @@ interface SchedulerProps {
     closedDaysTimes?: ClosedDaysTimes;
     onEventClick?: (index: [string, number] | [null, null]) => void;
     originDate?: Date;
+    eventRootComponent?: any;
+    eventContentComponent?: (props: EventContentProps) => JSX.Element;
 }
 
 const weeks = [0, 1, 2, 3, 4]
@@ -39,6 +42,8 @@ const Scheduler: React.FC<SchedulerProps> = ({
     closedDaysTimes,
     onEventClick,
     originDate = new Date(),
+    eventRootComponent,
+    eventContentComponent
 }) => {
     const [currentYear, setCurrentYear] = useState(originDate.getFullYear())
     const [currentMonth, setCurrentMonth] = useState(originDate.getMonth())
@@ -110,6 +115,8 @@ const Scheduler: React.FC<SchedulerProps> = ({
                 visualGridVerticalPrecision={120} // grid incriments in minutes
                 originDate={originDay}
                 onEventClick={onEventClick}
+                eventRootComponent={eventRootComponent}
+                eventContentComponent={eventContentComponent}
             />
         </div>);
 }

@@ -15,3 +15,12 @@ export enum AppointmentStatus {
     complete,
     declined,
 }
+
+
+export interface CreateAppointmentRequest {
+    appointment: Partial<Appointment>;
+    domain: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+}

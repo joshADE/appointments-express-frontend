@@ -1,17 +1,35 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import moment from 'moment';
 import React, { useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useHistory } from 'react-router-dom'
 import { SkewLoader } from 'react-spinners';
-import { ClosedDaysTimes, EventDetails, Events, Hours } from 'react-week-schedulr';
-import { useGetAllStoreAppointmentsQuery, useGetStoreAndTimesQuery } from '../../../app/services/appointments';
+import { ClosedDaysTimes, DefaultEventRootComponent, EventDetails, EventRootProps, Events, Hours } from 'react-week-schedulr';
+import { useCreateAppointmentMutation, useGetAllStoreAppointmentsQuery, useGetStoreAndTimesQuery } from '../../../app/services/appointments';
 import { Appointment, AppointmentStatus } from '../../../features/appointment/appointmentTypes';
 import AppointmentDetailsForm from '../../shared/AppointmentDetailsForm';
 import Modal from '../../shared/Modal';
 import Scheduler from '../../shared/Scheduler';
 import { convertArrayAppointmentsToEvents, convertStoreClosedToSchedulerClosed, convertStoreHoursToSchedulerHours } from '../manageappointment/ManageAppointment';
 import Instructions from './Instructions';
-import { RiMailSendLine } from 'react-icons/ri'
+import ModalContentForm from './ModalContentForm';
+
+
+const EventRoot = React.forwardRef<any, EventRootProps>(function EventRoot(
+    { handleDelete, disableDelete, type, ...props },
+    ref
+  ) {
+    return (
+      
+        <DefaultEventRootComponent
+          handleDelete={handleDelete}
+          disableDelete={disableDelete}
+          type={type}
+          {...props}
+          className={`${props.className} ${type === 'static' ? 'opacity-75': ''}`}
+          ref={ref}
+        />
+    )
+  })
 
 const generateEvent = (eventDetails: EventDetails): Events => {
     const id = String(-1)
@@ -21,6 +39,7 @@ const generateEvent = (eventDetails: EventDetails): Events => {
 
 const CreateAppointment: React.FC = () => {
     const { id } = useParams<{id: string}>();
+    const history =  useHistory();
     const numberId = Number(id);
     const { 
         data: storeAndTimes,
@@ -34,6 +53,8 @@ const CreateAppointment: React.FC = () => {
         isFetching: appointmentsFetching,
         error: appointmentsError
     } = useGetAllStoreAppointmentsQuery(numberId, { skip: isNaN(numberId) });
+
+    const [createAppointment, { isLoading: isCreatingAppointment }] = useCreateAppointmentMutation();
 
 
 
@@ -55,7 +76,7 @@ const CreateAppointment: React.FC = () => {
     const [dynamicEvents, setDynamicEvents] = useState<Events>({}) // events that can be moved/deleted
     const [staticEvents, setStaticEvents] = useState<Events>({}) // events that can't be move/deleted
     const [modalOpen, setModalOpen] = useState(false);
-    const [email, setEmail] = useState("");
+
     useEffect(() => {
         if (appointments){
             setStaticEvents(convertArrayAppointmentsToEvents(appointments));
@@ -84,8 +105,8 @@ const CreateAppointment: React.FC = () => {
         setModalOpen(true);
     }
     
-    const saveAndSendAppointment = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const saveAndSendAppointment = (values: { email: string; firstName: string; lastName: string; }) => {
+        const { email, firstName, lastName } = values;
         const { title, desc, range } = dynamicEvents['-1'];
         const newAppointment: Partial<Appointment> = { 
             description: desc, 
@@ -96,8 +117,16 @@ const CreateAppointment: React.FC = () => {
             end: moment(range[1]).format("YYYY-MM-DD[T]HH:mm:ss"),
         }
         const domain = window.location.href.replace(window.location.pathname, "");
-        alert("Saving to the database " + JSON.stringify(newAppointment) + " and sending email to " + email + " " + domain);
-        setModalOpen(false);
+        createAppointment({ appointment: newAppointment, domain, email, firstName, lastName })
+        .then((result) => {
+            alert("Successfully created appointment. Your email should be in your mailbox. Redirecting to homepage")
+            setModalOpen(false);
+            history.push("/");
+        })
+        .catch((err) => {
+            alert("Failed to create the appointment");
+        });
+        
         
     }
     
@@ -150,7 +179,7 @@ const CreateAppointment: React.FC = () => {
                         </div>
                         <div className="md:col-span-4 md:row-span-1 md:justify-self-end md:self-center bg-white rounded-lg shadow p-5 font-montserrat">
                             <button 
-                                className="border-green-900 border disabled:opacity-50 bg-green-600 text-white rounded focus:outline-none py-3 px-6 mr-5"
+                                className="border-green-900 border disabled:opacity-50 bg-primary text-white rounded focus:outline-none py-3 px-6 mr-5"
                                 disabled={dynamicEvents['-1'] === undefined}
                                 onClick={openSaveNewAppointmentModal}
                             >
@@ -177,6 +206,7 @@ const CreateAppointment: React.FC = () => {
                                 minTimeBlock={storeAndTimes.store.minTimeBlock}
                                 maxTimeBlock={storeAndTimes.store.maxTimeBlock}
                                 onEventClick={(index) => setSelectedAppointmentId(index[0])}
+                                eventRootComponent={EventRoot}
                                 />
                             </div>
                             <div className={`${selectedAppointmentId !== null? 'h-3/6': 'h-1/6'} transition-all duration-500 ease-out bg-white rounded-lg shadow p-5 overflow-auto`}>
@@ -193,13 +223,16 @@ const CreateAppointment: React.FC = () => {
                     </div>
                     {modalOpen && 
                     <Modal setModalOpen={setModalOpen} title="Enter your email:" bodyText="An email will be sent to you to allow you to view the appointment status.">
-                        <form className="text-gray-500 flex flex-col justify-center items-center" onSubmit={saveAndSendAppointment}>
-                            <input className="text-black border-b border-gray-500 focus:outline-none" type="email" required name="email" placeholder="johndoe@email.com" value={email} onChange={e => setEmail(e.target.value)}  />
-                            <button type="submit" className="border border-gray-500 hover:bg-gray-500 hover:text-white rounded-md my-2" >
-                                <RiMailSendLine className="inline-block mx-1" /> 
-                                <span className="inline-block mx-1">Send</span>
-                            </button>
-                        </form>
+                        <ModalContentForm 
+                            saveAndSendAppointment={saveAndSendAppointment}
+                        />
+                        {isCreatingAppointment && 
+                        <SkewLoader
+                            color="#333"
+                            loading={isCreatingAppointment}
+                            size="20px"
+                        />
+                        }
                     </Modal>}
                     
                     </>}

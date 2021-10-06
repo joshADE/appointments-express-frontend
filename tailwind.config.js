@@ -6,6 +6,9 @@ module.exports = {
     extend: {
       gridTemplateRows: { 
         'store-section': '100px repeat(2, minmax(0, 1fr)) 100px'
+      },
+      colors: {
+        'primary': 'hsl(175, 68%, 30%)'
       }
     },
     fontFamily: {

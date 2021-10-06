@@ -4,7 +4,7 @@ import { User, UserLoginData, UserEditAccountData } from '../../features/user/us
 import { StoreWithDetails, CreateStoreRequest, Store, StoreHours, UpdateClosedRequest, UserAndRoleForStore, StoreAndTimes } from '../../features/store/storeTypes';
 import { converObjectToReplaceJsonPatch } from '../../features/commonTypes';
 import { baseUrl } from '../../axios';
-import { Appointment } from '../../features/appointment/appointmentTypes';
+import { Appointment, CreateAppointmentRequest } from '../../features/appointment/appointmentTypes';
 
 function providesList<R extends { id: string | number }[], T extends string>(
     resultsWithIds: R | undefined,
@@ -108,6 +108,10 @@ export const appointmentApi = createApi({
             query: (id) => ({ url: `appointments/storeappointments/${id}`}),
             providesTags: (result) => providesList(result?.map(({ id }) => ({id})), 'Appointment'),
         }),
+        createAppointment: build.mutation<Appointment, CreateAppointmentRequest>({
+            query: (data: CreateAppointmentRequest) => ({ url: 'appointments/createappointment', method: 'POST', body: data}),
+            invalidatesTags: [{ type: 'Appointment', id: 'LIST' }],
+        }), 
     })
 });
 
@@ -131,6 +135,7 @@ export const {
     useEditAccountMutation,
     useDeleteAccountMutation,
     useGetAllStoreAppointmentsQuery,
+    useCreateAppointmentMutation,
 } = appointmentApi;
 
 
