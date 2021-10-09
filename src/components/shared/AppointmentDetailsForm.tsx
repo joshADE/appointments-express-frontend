@@ -11,6 +11,7 @@ const statusOptions = [
     { label: 'Pending', value: AppointmentStatus.pending },
     { label: 'Complete', value: AppointmentStatus.complete },
     { label: 'Declined', value: AppointmentStatus.declined },
+    { label: 'Accepted', value: AppointmentStatus.accepted },
 ]
 
 interface AppointmentDetailsFormProps {
@@ -21,6 +22,7 @@ interface AppointmentDetailsFormProps {
     setSelectedAppointmentId: (value: React.SetStateAction<string | null>) => void;
     selectedAppointmentId: string | null;
     hiddenDetails?: boolean;
+    statusUpdates?: {[id: string]:AppointmentStatus};
 }
 
 const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
@@ -31,11 +33,13 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
     setSelectedAppointmentId,
     selectedAppointmentId,
     events,
+    statusUpdates,
 }) => {
     
         const appointmentEventDetails = selectedAppointmentId ? events[selectedAppointmentId] : undefined;
         const appointment = selectedAppointmentId? appointments?.find(app => app.id === Number(selectedAppointmentId)) : undefined;
         const status = appointment ? appointment.status : undefined;
+        const updatedStatus = statusUpdates && selectedAppointmentId ? statusUpdates[selectedAppointmentId] : undefined;
         return (
         <div className="h-full relative">
             {appointmentEventDetails !== undefined &&
@@ -48,7 +52,7 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
             {appointmentEventDetails !== undefined ?
             <Formik
             enableReinitialize
-            initialValues={{ title: hiddenDetails? "Hidden" : appointmentEventDetails.title, desc: hiddenDetails? "Hidden" : appointmentEventDetails.desc, start: appointmentEventDetails.range[0], end: appointmentEventDetails.range[1], status }}
+            initialValues={{ title: hiddenDetails? "Hidden" : appointmentEventDetails.title, desc: hiddenDetails? "Hidden" : appointmentEventDetails.desc, start: appointmentEventDetails.range[0], end: appointmentEventDetails.range[1], status: updatedStatus !== undefined? updatedStatus: status  }}
             validationSchema={yup.object({
               title: yup
                 .string()

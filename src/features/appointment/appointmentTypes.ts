@@ -14,6 +14,7 @@ export enum AppointmentStatus {
     pending,
     complete,
     declined,
+    accepted
 }
 
 
