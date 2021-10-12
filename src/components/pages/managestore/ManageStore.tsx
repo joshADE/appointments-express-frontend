@@ -57,7 +57,7 @@ const ManageStore: React.FC = () => {
   }
 
   return (
-    <div className="overflow-y-auto h-full w-11/12 font-roboto p-4">
+    <div className="overflow-y-auto h-full w-11/12 font-montserrat p-4">
         <DashboardPageHeader
           title="Manage Store and Times"
           description="Here you can open a store, manage existing stores, edit your quick store profile, set day and times for a particular store."
@@ -93,7 +93,7 @@ const ManageStore: React.FC = () => {
           <div className="md:col-span-1 md:row-span-3 bg-white rounded-lg shadow p-5">
             <div className="max-w-xs">
               <div className="font-thin border-b-4 border-black pb-4 mb-4">
-                <h3 className="text-lg">Stores</h3>
+                <h3 className="text-lg font-extrabold font-open-sans">Stores</h3>
                 <div className="text-xs text-gray-400">
                   {storesWithoutQP.length} Total -{" "}
                   {

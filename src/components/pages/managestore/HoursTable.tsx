@@ -25,7 +25,7 @@ const HoursTable: React.FC<HoursTableProps> = ({
         
 
         return (
-        <table className="font-roboto text-xs font-normal table-auto border-collapse inline-block mt-2">
+        <table className="font-montserrat text-xs font-normal table-auto border-collapse inline-block mt-2 pr-4">
             <thead>
                 <tr>
                     <th key="-1">{' '}</th>
@@ -37,7 +37,7 @@ const HoursTable: React.FC<HoursTableProps> = ({
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr className="border-b border-gray-100">
                     <th key="isOpen-1">isOpen?</th>
                     {columns.map(value => {
                         return (
@@ -51,7 +51,7 @@ const HoursTable: React.FC<HoursTableProps> = ({
                         )
                     })}
                 </tr>
-                <tr>
+                <tr className="border-b border-gray-100">
                     <th key="open-1">open</th>
                     {columns.map(value => {
                         return (

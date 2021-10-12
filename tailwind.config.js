@@ -15,6 +15,8 @@ module.exports = {
       'oswald': ['Oswald', 'ui-sans-serif', 'sans-serif'],
       'montserrat': ['Montserrat', 'ui-sans-serif', 'sans-serif'],
       'roboto': ['Roboto', 'ui-sans-serif', 'sans-serif'],
+      'tomorrow': ['Tomorrow', 'ui-sans-serif', 'sans-serif'],
+      'open-sans': ['Open Sans', 'ui-sans-serif', 'sans-serif'],
     },
   },
   variants: {

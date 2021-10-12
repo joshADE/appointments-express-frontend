@@ -72,7 +72,7 @@ const ManageRole: React.FC = () => {
   };
 
   return (
-    <div className="overflow-y-auto h-full w-11/12 font-roboto p-4">
+    <div className="overflow-y-auto h-full w-11/12 font-montserrat p-4">
         <DashboardPageHeader
           title="Roles"
           description="Here you can see the roles for a particaluar store and assign roles to other users."

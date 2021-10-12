@@ -301,13 +301,13 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
         
     }, [closed]);
     return (
-        <div className="font-roboto h-full pb-5">
+        <div className="font-montserrat h-full pb-5">
             <form className="w-full h-full flex flex-col md:flex-row" onSubmit={handleSubmit}>
-            <div className="md:w-3/4 h-full">
-                <h3 className="font-bold text-2xl border-b-2 border-gray-900">{isQuickProfile ? (storeDetails ? "Quick Profile" : "Create Quick Profile") : (storeDetails ? "Edit " + storeDetails.store.name : "Create new store")}</h3>
+            <div className="md:w-3/4 h-full mb-3">
+                <h3 className="font-bold text-2xl font-open-sans mb-4">{isQuickProfile ? (storeDetails ? "Quick Profile" : "Create Quick Profile") : (storeDetails ? "Edit " + storeDetails.store.name : "Create new store")}</h3>
                 <div className="h-full flex flex-col md:flex-row md:flex-wrap overflow-auto">
                     <div className="md:w-56 mr-4 relative">
-                        <h4 className="font-bold text-lg border-b border-gray-900">Details</h4>
+                        <h4 className="font-bold text-lg font-open-sans border-b border-gray-300">Details</h4>
                         <div>
                             <InfoForm 
                                 info={info}
@@ -321,12 +321,12 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                         <button
                             type="submit"
                             disabled={isEditingInfo}
-                            className="font-bold text-sm p-1 text-gray-700 bg-gray-300 mt-1"
+                            className="font-bold text-sm px-2 py-0.5 text-green-700 border rounded-lg border-green-700 hover:bg-green-100 mt-2"
                             onClick={() => setSubmitButton('editinfo')}
                         >Save</button>: <div className="text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500">Must be owner to edit the details</div>)}
                     </div>
                     <div className="md:w-max mr-4 relative">
-                        <h4 className="font-bold text-lg border-b border-gray-900">Hours</h4>
+                        <h4 className="font-bold text-lg font-open-sans border-b border-gray-300">Hours</h4>
                         
                         <div className="overflow-x-auto flex items-center">
                             <HoursTable 
@@ -335,7 +335,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                                 onChangeOpenOrClose={onChangeOpenOrClose}
                             />
                             {(isQuickProfile && storeDetails !== undefined) && 
-                            <div className="inline-block">
+                            <div className="inline-block ml-2">
                                 {" "}
                                 <Checkbox checked={overrideProperties.hours} onChange={e => onChangeOverridePropertyByKey('hours', e)} />
                             </div>}
@@ -344,12 +344,12 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                         <button
                             type="submit"
                             disabled={isEditingHours}
-                            className="font-bold text-sm p-1 text-gray-700 bg-gray-300 mt-1"
+                            className="font-bold text-sm px-2 py-0.5 text-green-700 border rounded-lg border-green-700 hover:bg-green-100 mt-2"
                             onClick={() => setSubmitButton('edithours')}
                         >Save</button>}
                     </div>
                     <div className="md:w-max mr-4 relative">
-                        <h4 className="font-bold text-lg border-b border-gray-900 truncate mb-1">Closed Days / Times</h4>
+                        <h4 className="font-bold text-lg font-open-sans border-b border-gray-300 truncate mb-1">Closed Days / Times</h4>
                          
                         <div className="flex items-start">
                             <ClosedDaysTimesList 
@@ -364,7 +364,7 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                             <button
                                 type="submit"
                                 disabled={isEditingClosed}
-                                className="font-bold text-sm p-1 text-gray-700 bg-gray-300"
+                                className="font-bold text-sm px-2 py-0.5 text-green-700 border rounded-lg border-green-700 hover:bg-green-100"
                                 onClick={() => setSubmitButton('editclosed')}
                             >Save</button>}
                             {(isQuickProfile && storeDetails !== undefined) && 
@@ -383,20 +383,20 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                 {(!isQuickProfile && storeDetails) && 
                 <Button
                     type="button"
-                    className="h-12"
+                    className="h-12 bg-green-600 text-white hover:opacity-90"
                     onClick={clearStoreDetails}
                 >Stop Editing</Button>}
                 {(storeDetails?.store.id === undefined) && 
                 <Button
                     type="submit"
                     disabled={isCreatingStore}
-                    className="h-12"
+                    className="h-12 bg-green-600 text-white hover:opacity-90"
                     onClick={() => setSubmitButton('createstore')}
                 >Create {isQuickProfile && 'Quick Profile'}</Button>}
                 {(isQuickProfile && storeDetails) && 
                 <Button
                     type="button"
-                    className="h-12"
+                    className="h-12 bg-green-600 text-white hover:opacity-90"
                     onClick={handleTransferOverrides}
                 >Transfer selected fields</Button>}
             </div>

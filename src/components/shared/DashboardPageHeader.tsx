@@ -11,10 +11,10 @@ const DashboardPageHeader: React.FC<DashboardPageHeaderProps> = ({ title, descri
         <div className="flex justify-between">
             <div className="w-2/3">
                 <h1
-                    className="font-oswald font-semibold text-xl mb-4"
+                    className="font-open-sans font-semibold text-xl mb-4"
                 >{title}</h1>
                 {description && <p
-                    className="font-roboto text-xs text-gray-500 w-10/12"
+                    className="font-montserrat text-xs text-gray-500 w-10/12"
                 >{description}</p>}
             </div>
             <div className="w-1/6">

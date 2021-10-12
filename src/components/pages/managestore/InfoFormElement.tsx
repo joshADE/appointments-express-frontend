@@ -31,13 +31,13 @@ const InfoFormElement: React.FC<InfoFormElementProps> = ({
     onOverrideCheckedChanged
 }) => {
     return (
-      <div className="pt-5 text-xs">
-        <label htmlFor={id}>{label}: </label>
+      <div className="pt-2 text-xs">
+        <label className="block text-gray-800" htmlFor={id}>{label}: </label>
         {(type === "text" || type === "number") && (
           <input
             id={id}
             name={name}
-            className="border-b border-black focus:outline-none"
+            className="border border-gray-400 p-0.5 text-gray-700 rounded focus:outline-none focus:border-green-700"
             type={type}
             value={value}
             onChange={onChange}
@@ -48,7 +48,7 @@ const InfoFormElement: React.FC<InfoFormElementProps> = ({
           <select
             id={id}
             name={name}
-            className="border-b border-black focus:outline-none"
+            className="border border-gray-400 p-0.5 text-gray-700 rounded focus:outline-none focus:border-green-700"
             value={value}
             onChange={onChange}
           >
@@ -71,7 +71,7 @@ const InfoFormElement: React.FC<InfoFormElementProps> = ({
           />
         )}
         {showOverrideOption && (
-          <div className="inline-block">
+          <div className="inline-block ml-1">
             {" "}
             <Checkbox checked={overrideChecked} onChange={onOverrideCheckedChanged} />
           </div>

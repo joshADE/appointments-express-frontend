@@ -32,7 +32,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
     deleteClosed
 }) => {
     console.log('Rerendered ClosedDaysTimesList');
-        return (<div className="text-xs max-w-xs">
+        return (<div className="text-xs max-w-xs mr-1">
             <ul className="w-full">
                 {closed.map((cdt, index) => {
                     return (
@@ -48,7 +48,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                                 <Datetime 
                                     value={moment(cdt.from,'YYYY-MM-DD[T]HH:mm:ss')}
                                     onChange={e => onChangeFromOrTo(index, true, moment(e))}
-                                    inputProps={{className:"border-b border-black"}}
+                                    inputProps={{className:"border border-gray-400 p-0.5 text-gray-700 rounded focus:outline-none focus:border-green-700"}}
                                 />
                                 {/* <input 
                                     className="border-b border-black focus:outline-none"
@@ -62,7 +62,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                                 <Datetime 
                                     value={moment(cdt.to,'YYYY-MM-DD[T]HH:mm:ss')}
                                     onChange={e => onChangeFromOrTo(index, false, moment(e))}
-                                    inputProps={{className:"border-b border-black"}}
+                                    inputProps={{className:"border border-gray-400 p-0.5 text-gray-700 rounded focus:outline-none focus:border-green-700"}}
                                 />
                                 {/* <input 
                                     className="border-b border-black focus:outline-none"
@@ -85,7 +85,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                                     value={cdt.repeatInterval}
                                     disabled={!cdt.repeat}
                                     onChange={e => onChangeRepeatInterval(index, +e.target.value)}
-                                    className="border-b border-black"
+                                    className="border border-gray-400 p-0.5 text-gray-700 rounded focus:outline-none focus:border-green-700"
                                 >
                                     {Object.entries(intervals).map(interval => <option key={interval[1]} value={interval[1]}>{interval[0]}</option>)}
                                 </select>
@@ -94,7 +94,7 @@ const ClosedDaysTimesList: React.FC<ClosedDaysTimesListProps> = ({
                     )
                 })}
             </ul>
-            <button type="button" onClick={addClosed} className="border-t border-b w-full border-black">New closed day/time</button>
+            <button type="button" onClick={addClosed} className="border-t border-b w-full border-black focus:outline-none">New closed day/time</button>
         </div>);
 }
 

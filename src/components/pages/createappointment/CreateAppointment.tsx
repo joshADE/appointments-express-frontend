@@ -80,6 +80,8 @@ const CreateAppointment: React.FC = () => {
     useEffect(() => {
         if (appointments){
             setStaticEvents(convertArrayAppointmentsToEvents(appointments));
+        }else{
+            setStaticEvents({});
         }
     }, [appointments])
 
