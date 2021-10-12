@@ -1,6 +1,5 @@
 import moment from 'moment';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { AnimatedList } from 'react-animated-list';
 import { Appointment, AppointmentStatus } from '../../../features/appointment/appointmentTypes';
 import { StoreWithDetails } from '../../../features/store/storeTypes';
 import Checkbox from '../../shared/Checkbox';
@@ -188,13 +187,7 @@ const ListView: React.FC<ListViewProps> = ({
                 </div>
             </div>
             <div className="h-full overflow-auto flex flex-wrap justify-around py-5 px-1">
-            {sortedAppointments &&
-            <AnimatedList 
-                animation="fade"
-                initialAnimationDuration={600}
-            >
-            
-                {sortedAppointments.map(appointment => (
+            {sortedAppointments && sortedAppointments.map(appointment => (
                     <AppointmentCard 
                         key={appointment.id}
                         appointment={appointment}
@@ -202,8 +195,6 @@ const ListView: React.FC<ListViewProps> = ({
                         updateStatus={updateStatus}
                     />
                 ))}
-            </AnimatedList>
-            }
 
             </div>
         </div>);
