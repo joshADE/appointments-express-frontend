@@ -16,6 +16,7 @@ import { SkewLoader } from 'react-spinners';
 import { ClosedDaysTimes, StoreHours } from '../../../features/store/storeTypes';
 import CalendarView from './CalendarView';
 import ListView from './ListView';
+import RadioButton from '../../shared/RadioButton';
 
 
 
@@ -89,7 +90,7 @@ const ManageAppointment: React.FC = () => {
 
 
         return (
-        <div className="overflow-y-auto h-full w-11/12 font-roboto p-4 relative flex flex-col">
+        <div className="overflow-y-auto h-full w-11/12 font-montserrat p-4 relative flex flex-col">
             {(storesLoading || storesFetching || appointmentsLoading || appointmentsFetching) && (
             <div className="absolute right-0 bottom-0">
               <SkewLoader
@@ -121,8 +122,8 @@ const ManageAppointment: React.FC = () => {
                   />
                 </div>
                 <div className="bg-white rounded-lg shadow p-3 lg:w-1/2 mb-2 lg:ml-1 text-gray-700">
-                  <label className="mr-2"><input type="radio" name="viewType" checked={viewType === '0'} value='0' onChange={(e) => setViewType(e.target.value)} /> Calendar View</label>
-                  <label><input type="radio" name="viewType" checked={viewType === '1'} value='1' onChange={(e) => setViewType(e.target.value)} /> List View</label>
+                  <label className="mr-2"><RadioButton selected={viewType} name="viewType" value='0' onChange={setViewType} /> Calendar View</label>
+                  <label><RadioButton selected={viewType} name="viewType" value='1' onChange={setViewType} /> List View</label>
                 </div>
               </div>)}
             

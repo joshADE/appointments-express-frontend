@@ -112,14 +112,14 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
                   <div className="lg:col-span-2 flex justify-center items-center py-3 flex-col lg:flex-row">
                     <Button
                       type="submit"
-                      className="mr-2 mb-2"
+                      className="mr-2 mb-2 text-gray-700 hover:text-gray-900"
                     >
                       Save the details
                     </Button>
                     <Button
                       type="button"
                       bare
-                      className="mr-2 mb-2"
+                      className="mr-2 mb-2 text-gray-700 hover:text-gray-900"
                       onClick={() => props.resetForm()}
                     >
                       Reset Changes

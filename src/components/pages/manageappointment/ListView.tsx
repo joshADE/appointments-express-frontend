@@ -124,9 +124,11 @@ const ListView: React.FC<ListViewProps> = ({
     }
     , [filteredAppointments, sortingValue]);
 
+    const buttonsDisabled = Object.keys(statusUpdates).length === 0;
+
         return (<div className="bg-white rounded-lg shadow p-5 overflow-auto h-full flex flex-col">
-            <div className="flex flex-col lg:flex-row lg:justify-around -mx-5 border-b border-gray-400 shadow-lg px-3 pb-3">
-                <div className="font-roboto lg:w-1/4 mb-1">
+            <div className="flex flex-col lg:flex-row lg:justify-around -mx-5 border-b border-gray-200 shadow-md px-3 pb-3">
+                <div className="lg:w-1/4 mb-1">
                     <h4 className="text-gray-600 font-bold">Filter</h4>
                     <div className="flex flex-wrap text-gray-500">
                         <label className="w-1/2">
@@ -159,7 +161,7 @@ const ListView: React.FC<ListViewProps> = ({
                         </label>
                     </div>
                 </div>
-                <div className="font-roboto lg:w-1/4 mb-1">
+                <div className="lg:w-1/4 mb-1">
                     <h4 className="text-gray-600 font-bold">Sort</h4>
                     <div className="text-gray-500">
                         <Select 
@@ -171,15 +173,15 @@ const ListView: React.FC<ListViewProps> = ({
                 </div>
                 <div className="lg:w-1/4 mb-1">
                     <button
-                        className="border-green-900 border disabled:opacity-75 bg-primary text-white rounded focus:outline-none py-1 px-2 mr-2"
-                        disabled={Object.keys(statusUpdates).length === 0}
+                        className={`border-green-900 border disabled:opacity-50 ${!buttonsDisabled? 'hover:bg-green-100' : ''} text-green-900 rounded focus:outline-none py-1 px-2 mr-2`}
+                        disabled={buttonsDisabled}
                         onClick={saveStatusUpdates}
                     >
                         Save Changes
                     </button>
                     <button
-                        className="border-red-900 border disabled:opacity-75 bg-red-400 text-white rounded focus:outline-none py-1 px-2"
-                        disabled={Object.keys(statusUpdates).length === 0}
+                        className={`border-red-900 border disabled:opacity-50 ${!buttonsDisabled? 'hover:bg-red-100' : ''} text-red-900 rounded focus:outline-none py-1 px-2`}
+                        disabled={buttonsDisabled}
                         onClick={() => setStatusUpdates({})}
                     >
                         Reset Changes

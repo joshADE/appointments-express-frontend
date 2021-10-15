@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useAppointRoleMutation } from '../../../app/services/appointments';
 import { StoreWithDetails } from '../../../features/store/storeTypes';
 import { Button } from "../../shared/Button";
+import RadioButton from '../../shared/RadioButton';
 
 interface AppointRoleFormProps {
     selectedStore: StoreWithDetails;
@@ -43,7 +44,7 @@ const AppointRoleForm: React.FC<AppointRoleFormProps> = ({
           >
             {currentUserIsOwner?
             <span className="mr-4">
-            <input className="mr-2" type="radio" name="role" id="manager-radio" value="Manager" checked={role === "Manager"} onChange={e => setRole(e.target.value)} /><label htmlFor="manager-radio">Manager</label>
+              <label className="flex items-center"><RadioButton selected={role} name="role" value="Manager" onChange={setRole} className="mr-2" /> <span>Manager</span></label>
             </span>:
             <div className="h-full text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500">
               Must be owner to appoint manager
