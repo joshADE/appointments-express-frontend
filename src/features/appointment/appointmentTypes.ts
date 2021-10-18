@@ -25,3 +25,8 @@ export interface CreateAppointmentRequest {
     firstName: string;
     lastName: string;
 }
+
+export interface UpdateAppointmentStatusRequest {
+    appointmentId: number;
+    newStatus: AppointmentStatus;
+}

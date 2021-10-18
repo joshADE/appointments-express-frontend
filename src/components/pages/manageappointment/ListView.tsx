@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { Appointment, AppointmentStatus } from '../../../features/appointment/appointmentTypes';
+import { useUpdateAppointmentsStatusMutation } from '../../../app/services/appointments';
+import { Appointment, AppointmentStatus, UpdateAppointmentStatusRequest } from '../../../features/appointment/appointmentTypes';
 import { StoreWithDetails } from '../../../features/store/storeTypes';
 import Checkbox from '../../shared/Checkbox';
 import Select from '../../shared/Select';
@@ -60,7 +61,7 @@ const ListView: React.FC<ListViewProps> = ({
     const [statusFilter, setStatusFilter] = useState(initialStatusFilter);
     const [sortingValue, setSortingValue] = useState(0);
     const [statusUpdates, setStatusUpdates] = useState<{[id: number]:AppointmentStatus}>({}); // contains all the appointments that have all their status updated
-
+    const [sendUpdates, { isLoading: isUpdatingStatus} ] = useUpdateAppointmentsStatusMutation();
 
     const toggleStatusFilter = (e : boolean, status: AppointmentStatus) => {
         setStatusFilter(curr => ({...curr, [status]: e}));
@@ -70,10 +71,17 @@ const ListView: React.FC<ListViewProps> = ({
         setStatusUpdates({});
     }, [selectedStore])
 
-    const saveStatusUpdates = () => {
+    const saveStatusUpdates = async () => {
         // send updates to the database
-        alert("Saving the updated to the database...");
-        setStatusUpdates({});
+
+        const payload: UpdateAppointmentStatusRequest[] = Object.entries(statusUpdates).map(update => ({ appointmentId: Number(update[0]), newStatus: update[1] }));
+        try {
+            await sendUpdates({id: selectedStore.store.id, data: payload }).unwrap();
+            setStatusUpdates({});
+            alert("Successfully updated the status");
+        }catch (err){
+            alert("Failed to update the status the status");
+        }
     }
 
     const updateStatus = useCallback(
@@ -82,7 +90,7 @@ const ListView: React.FC<ListViewProps> = ({
 
             setStatusUpdates(curr => { 
                 let copy = {...curr};
-                if (isOriginalStatus){
+                if (isOriginalStatus && copy[id] !== undefined){
                     delete copy[id];
                 }else {
                     copy = {...copy, [id]: newStatus};
@@ -124,7 +132,7 @@ const ListView: React.FC<ListViewProps> = ({
     }
     , [filteredAppointments, sortingValue]);
 
-    const buttonsDisabled = Object.keys(statusUpdates).length === 0;
+    const buttonsDisabled = Object.keys(statusUpdates).length === 0 || isUpdatingStatus;
 
         return (<div className="bg-white rounded-lg shadow p-5 overflow-auto h-full flex flex-col">
             <div className="flex flex-col lg:flex-row lg:justify-around -mx-5 border-b border-gray-200 shadow-md px-3 pb-3">

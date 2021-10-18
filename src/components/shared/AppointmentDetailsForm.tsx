@@ -23,6 +23,7 @@ interface AppointmentDetailsFormProps {
     selectedAppointmentId: string | null;
     hiddenDetails?: boolean;
     statusUpdates?: {[id: string]:AppointmentStatus};
+    disabledButtons?: boolean;
 }
 
 const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
@@ -34,6 +35,7 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
     selectedAppointmentId,
     events,
     statusUpdates,
+    disabledButtons,
 }) => {
     
         const appointmentEventDetails = selectedAppointmentId ? events[selectedAppointmentId] : undefined;
@@ -113,6 +115,7 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
                     <Button
                       type="submit"
                       className="mr-2 mb-2 text-gray-700 hover:text-gray-900"
+                      disabled={disabledButtons}
                     >
                       Save the details
                     </Button>
@@ -121,6 +124,7 @@ const AppointmentDetailsForm: React.FC<AppointmentDetailsFormProps> = ({
                       bare
                       className="mr-2 mb-2 text-gray-700 hover:text-gray-900"
                       onClick={() => props.resetForm()}
+                      disabled={disabledButtons}
                     >
                       Reset Changes
                     </Button>

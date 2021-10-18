@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState, memo } from 'react'
 import { ClosedDaysTimes, EventDetails, Events } from 'react-week-schedulr';
-import { Appointment, AppointmentStatus } from '../../../features/appointment/appointmentTypes';
+import { Appointment, AppointmentStatus, UpdateAppointmentStatusRequest } from '../../../features/appointment/appointmentTypes';
 import { StoreWithDetails } from '../../../features/store/storeTypes';
 import { convertArrayAppointmentsToEvents, convertStoreClosedToSchedulerClosed, convertStoreHoursToSchedulerHours } from './ManageAppointment';
 import Scheduler from '../../shared/Scheduler';
 import AppointmentDetailsForm from '../../shared/AppointmentDetailsForm';
+import { useUpdateAppointmentsStatusMutation } from '../../../app/services/appointments';
 
 const generateEvent = (eventDetails: EventDetails): Events => {
     const id = String(Math.random())
@@ -25,7 +26,8 @@ const CalendarView: React.FC<CalendarViewProps> = ({
     const [staticEvents, setStaticEvents] = useState<Events>({}) // events that can't be move/deleted
     const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null);
     const [statusUpdates, setStatusUpdates] = useState<{[id: string]:AppointmentStatus}>({}); // contains all the appointments that have all their status updated
-    
+    const [sendUpdates, { isLoading: isUpdatingStatus} ] = useUpdateAppointmentsStatusMutation();
+
 
     const updateAppointment = (values: {
         id: string | null;
@@ -35,19 +37,24 @@ const CalendarView: React.FC<CalendarViewProps> = ({
         end: Date;
         status: AppointmentStatus | undefined;
     }) => {
+      // send updates to the database
         const { id, status } = values;
 
         if (id && status !== undefined){
-            setStatusUpdates(curr => ({...curr, [id]: status }));
+            // setStatusUpdates(curr => ({...curr, [id]: status }));
+            const payload: UpdateAppointmentStatusRequest[] = [{ appointmentId: Number(id), newStatus: status }]
+            sendUpdates({id: selectedStore.store.id, data: payload })
+            .then((res) => {
+              setStatusUpdates({});
+              setSelectedAppointmentId(null);
+              alert("Successfully updated the status");
+            })
+            .catch((err) => {
+              alert("Failed to update the status of the appointment");
+            })
         }
     }
 
-    const saveStatusUpdates = () => {
-        // send updates to the database
-        alert("Saving the updated to the database...");
-        setStatusUpdates({});
-        setSelectedAppointmentId(null);
-    }
 
     useEffect(() => {
         setStatusUpdates({});
@@ -78,17 +85,10 @@ const CalendarView: React.FC<CalendarViewProps> = ({
       else
         return [];
   }, [selectedStore])
+
         return (<>
             <div className={`${selectedAppointmentId !== null? 'h-3/6': 'h-5/6'} transition-all duration-500 ease-out overflow-auto bg-white rounded-lg shadow p-5 mb-2 relative`}>
-                 <div className="bg-white flex justify-center lg:justify-end">
-                    <button
-                        disabled={Object.keys(statusUpdates).length === 0}
-                        className="border-green-900 border disabled:opacity-75 bg-primary text-white rounded focus:outline-none py-3 px-6"
-                        onClick={saveStatusUpdates}
-                    >
-                        Save status updates
-                    </button>
-                 </div>
+
                 <Scheduler 
                   dynamicEvents={dynamicEvents}
                   onChangeDynamicEvents={setDynamicEvents}
@@ -113,6 +113,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
                   events={staticEvents}
                   updateAppointment={updateAppointment}
                   statusUpdates={statusUpdates}
+                  disabledButtons={isUpdatingStatus}
                 />
             </div>
     </>);
