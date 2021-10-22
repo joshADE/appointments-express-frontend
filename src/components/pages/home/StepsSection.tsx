@@ -1,16 +1,17 @@
-import React from 'react'
+import React, { memo, Ref } from 'react'
 
-const StepsSection: React.FC = () => {
+const StepsSection = React.forwardRef((props, ref: Ref<HTMLDivElement>) => {
+    console.log("rerendered steps")
         return (
-            <section id="steps" className="font-roboto">
-                <div className="py-20 mx-auto container px-10 overflow-hidden">
-                    <h3 className="text-green-500 text-center font-semibold text-sm">Steps</h3>
+            <section id="steps" className="font-open-sans text-gray-900">
+                <div ref={ref} className="py-20 mx-auto container px-10 overflow-hidden rounded-2xl bg-gradient-to-b from-greenfade">
+                    <h3 className="text-green-500 text-center font-semibold text-sm font-roboto">Steps</h3>
                     <h2 className="text-center font-extrabold text-4xl">How do you use the app?</h2>
                     <div className="flex flex-col md:flex-row mt-20 justify-around">
                         <div className="lg:p-10 mb-10">
                             <h5 className="text-center font-semibold">Store Owners/Managers</h5>
 
-                            <ol className="list-decimal p-10">
+                            <ol className="list-decimal p-10 font-roboto">
                                 <li>Create a store by supplying details such as the name, location and minimum/maximum number of minutes of an appointment</li>
                                 <li>Setup the hours for that store on a weekly basis</li>
                                 <li>Add any closed days and times</li>
@@ -24,18 +25,18 @@ const StepsSection: React.FC = () => {
                         <div className="lg:p-10 mb-10">
                             <h5 className="text-center font-semibold">Store Customers</h5>
 
-                            <ol className="list-decimal p-10">
+                            <ol className="list-decimal p-10 font-roboto">
                                 <li>Create an appointment by going to the link provided by the store owner or alternatively use the search box above to search for a store</li>
                                 <li>Fill in the appointment details such as the name, and description and use the interactive calendar to schedule the appointment</li>
                                 <li>Once filled, the appointment details will be sent to the owner/manager of the store where they can approve of the time</li>
                                 <li>When the store owner approves of the appointment, visit the store at the scheduled day and time</li>
                             </ol>
-                            <span className="font-semibold">(No signup required, link to schedule appointment will be provided in email)</span>
+                            <span className="font-semibold">(No signup required, link to the scheduled appointment will be provided in email)</span>
                         </div>
                     </div>
                 </div>
             </section>
         );
-}
+});
 
-export default StepsSection
+export default memo(StepsSection);

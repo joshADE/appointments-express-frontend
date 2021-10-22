@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Register from './components/pages/auth/Register';
 import ProtectedRoute from './components/pages/auth/ProtectedRoute';
-
+import './App.css';
 import { useAppSelector } from './app/hooks'
 import { selectIsAuthenticated } from './features/auth/authSlice'
 import { useLoadUserQuery } from './app/services/appointments';
