@@ -177,8 +177,9 @@ const ManageAccount: React.FC = () => {
                 actions.resetForm();
               } catch (err) {
                 let message = "Failed to edit account. ";
-                if (err.data?.errors){
-                  message = message + err.data.errors;
+                const error: any = err;
+                if (error?.data?.errors){
+                  message = message + error.data.errors;
                 }
                 alert(message);
               }

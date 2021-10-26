@@ -11,6 +11,7 @@ import { useLoadUserQuery } from './app/services/appointments';
 import Login from './components/pages/auth/Login';
 import UnprotectedRoute from './components/pages/auth/UnprotectedRoute';
 import CreateAppointment from './components/pages/createappointment/CreateAppointment';
+import CustomerDashboard from './components/CustomerDashboard';
 
 const App: React.FC = () => {
   
@@ -33,6 +34,7 @@ const App: React.FC = () => {
           </UnprotectedRoute>
           <ProtectedRoute path="/dashboard" component={Dashboard} authenticationPath='/login' isAuthenticated={isAuthenticated} />
           <Route path="/store/:id/createappointment" component={CreateAppointment} />
+          <Route path="/customer/:customerId/appointments" component={CustomerDashboard} />
           <Route path="*" component={() => <>Page Not Found</>} />
         </Switch>
       </div>

@@ -52,8 +52,11 @@ const Login: React.FC<LoginProps> = ({ isLoading }) => {
               actions.resetForm();
             }catch (err) {
               console.log(err)
-              if (err.data?.errors){
-                alert(err.data.errors);
+              const error: any = err;
+              if (error?.data?.errors){
+                alert(error.data.errors)
+              }else{
+                alert("Error: There was a problem in the login process. Try again later.")
               }
             }
           }}

@@ -4,7 +4,8 @@ import { User, UserLoginData, UserEditAccountData } from '../../features/user/us
 import { StoreWithDetails, CreateStoreRequest, Store, StoreHours, UpdateClosedRequest, UserAndRoleForStore, StoreAndTimes } from '../../features/store/storeTypes';
 import { converObjectToReplaceJsonPatch } from '../../features/commonTypes';
 import { baseUrl } from '../../axios';
-import { Appointment, CreateAppointmentRequest, UpdateAppointmentStatusRequest } from '../../features/appointment/appointmentTypes';
+import { Appointment, AppointmentAndStore, CreateAppointmentRequest, UpdateAppointmentStatusRequest } from '../../features/appointment/appointmentTypes';
+import { CustomerAuthResponse, CustomerAuthRequest } from '../../features/customerAuth/customerAuthTypes';
 
 function providesList<R extends { id: string | number }[], T extends string>(
     resultsWithIds: R | undefined,
@@ -116,6 +117,18 @@ export const appointmentApi = createApi({
             query: ({ id ,data}) => ({ url: `appointments/updateappointmentsstatus/${id}`, method: 'PUT', body: data}),
             invalidatesTags: [{ type: 'Appointment', id: 'LIST' }], 
         }),
+        loginCustomer: build.mutation<CustomerAuthResponse, CustomerAuthRequest>({
+            query: (credentials) => ({ url: 'appointments/logincustomer', method: 'POST', body: credentials }),
+            invalidatesTags: ['Store', 'User', 'Appointment'],
+        }),
+        getCustomerAppointments: build.query<Appointment[], number>({
+            query: (customerId) => ({ url: `appointments/customerappointments/${customerId}`, method: 'GET' }),
+            providesTags: (result) => providesList(result?.map(({ id }) => ({id})), 'Appointment'),
+        }),
+        getAppointmentAndStoreDetails: build.query<AppointmentAndStore, number>({
+            query: (appointmentId) => ({ url: `appointments/customerappointmentdetails/${appointmentId}`, method: 'GET'}),
+            providesTags: (result, error, args) => [{ type: 'Appointment', id: args}, {type: 'Store', id: result? result.store.id: 'LIST' }],
+        }),
     })
 });
 
@@ -141,9 +154,12 @@ export const {
     useGetAllStoreAppointmentsQuery,
     useCreateAppointmentMutation,
     useUpdateAppointmentsStatusMutation,
+    useLoginCustomerMutation,
+    useGetCustomerAppointmentsQuery,
+    useGetAppointmentAndStoreDetailsQuery,
 } = appointmentApi;
 
 
 export const {
-    endpoints: { login, register, editAvatar, editAccount, deleteAccount }
+    endpoints: { login, register, editAvatar, editAccount, deleteAccount, loginCustomer }
 } = appointmentApi;

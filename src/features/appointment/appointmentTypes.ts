@@ -1,3 +1,5 @@
+import { Store } from "../store/storeTypes";
+
 export interface Appointment {
     id: number;
     storeId: number;
@@ -29,4 +31,9 @@ export interface CreateAppointmentRequest {
 export interface UpdateAppointmentStatusRequest {
     appointmentId: number;
     newStatus: AppointmentStatus;
+}
+
+export interface AppointmentAndStore {
+    appointment: Appointment;
+    store: Store;
 }
