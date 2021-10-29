@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { SkewLoader } from "react-spinners";
 import {
-  useGetAllUserStoresQuery,
   useGetUsersAndRolesByStoreIdQuery,
   useUnappointRoleMutation,
 } from "../../../app/services/appointments";
@@ -11,23 +10,25 @@ import Select from "../../shared/Select";
 import AppointRoleForm from "./AppointRoleForm";
 import { useAppSelector } from "../../../app/hooks";
 import * as CgIcons from "react-icons/cg";
+import { useSelectStore } from "../../../hooks/useSelectStore";
 
 const ManageRole: React.FC = () => {
-  const [selectedStoreIndex, setSelectedStoreIndex] = useState(-1);
-  const {
-    data: storesWithDetails,
-    isFetching: isFetchingStores,
-    isLoading: isLoadingStores,
-    error: storeError,
-  } = useGetAllUserStoresQuery();
+  const { 
+    selectOptions,
+    selectedStoreIndex,
+    setSelectedStoreIndex,
+    selectedStore,
+    storesWithDetails,
+    rest: {
+      isLoading: isLoadingStores,
+      isFetching: isFetchingStores,
+      error: storeError
+    }
+  } = useSelectStore(-1);
+
 
   const [unappoint, { isLoading: isUnappointing }] = useUnappointRoleMutation();
 
-  const storesWithoutQP = storesWithDetails
-    ? storesWithDetails.filter(({ store }) => !store.isQuickProfile)
-    : [];
-  const selectedStore =
-    selectedStoreIndex > -1 ? storesWithoutQP[selectedStoreIndex] : undefined;
   const {
     data: usersAndRoles,
     isFetching: isFetchingRoles,
@@ -39,12 +40,6 @@ const ManageRole: React.FC = () => {
       skip: !selectedStore || !storesWithDetails,
     }
   );
-
-  const selectOptions = storesWithoutQP.map(({ store }, index) => ({
-    label: store.name,
-    value: index,
-  }));
-  selectOptions.unshift({ label: "Choose a store", value: -1 });
 
   const managers = usersAndRoles?.filter(({ role }) => role.name === "Manager");
   const owner = usersAndRoles?.filter(({ role }) => role.name === "Owner");
@@ -72,13 +67,13 @@ const ManageRole: React.FC = () => {
   };
 
   return (
-    <div className="overflow-y-auto h-full w-11/12 font-montserrat p-4">
+    <div className="overflow-y-scroll h-full w-11/12 font-montserrat p-4 relative">
         <DashboardPageHeader
           title="Roles"
           description="Here you can see the roles for a particaluar store and assign roles to other users."
         />
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-4 md:grid-rows-6">
-      <div className="md:col-span-4">
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-4 md:grid-rows-6 mt-2">
+      <div className="absolute right-0 bottom-0">
         {(isFetchingStores || isFetchingRoles) && (
           <SkewLoader
             color="#333"
@@ -127,11 +122,11 @@ const ManageRole: React.FC = () => {
                 <PersonList
                   people={managers}
                   render={(urs) => (
-                    <div className="border border-white text-white p-1 rounded-sm w-min">
+                    <div className="border border-white text-white p-1 rounded-sm">
                       {" "}
                       {currentUserIsOwner ? (
                         <button
-                        className="text-lg p-1 hover:bg-white hover:text-black"
+                        className="text-sm p-1 hover:bg-white hover:text-black w-full flex items-center"
                           disabled={isUnappointing}
                           onClick={() =>
                             unAppointPerson(
@@ -141,7 +136,10 @@ const ManageRole: React.FC = () => {
                             )
                           }
                         >
-                          <CgIcons.CgUserRemove />
+                          
+                          <CgIcons.CgUserRemove className="mr-2" />
+                          <span>Unappoint</span>
+                          
                         </button>
                       ) : (
                         <span>Only owner can unappoint</span>

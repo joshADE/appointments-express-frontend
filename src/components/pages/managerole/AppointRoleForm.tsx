@@ -3,6 +3,7 @@ import { useAppointRoleMutation } from '../../../app/services/appointments';
 import { StoreWithDetails } from '../../../features/store/storeTypes';
 import { Button } from "../../shared/Button";
 import RadioButton from '../../shared/RadioButton';
+import * as CgIcons from "react-icons/cg";
 
 interface AppointRoleFormProps {
     selectedStore: StoreWithDetails;
@@ -35,10 +36,11 @@ const AppointRoleForm: React.FC<AppointRoleFormProps> = ({
             }
         }
 
+        const buttonDisabled = !role || isAppointing;
         return (
         <form className="h-full" onSubmit={handleSubmit}>
           <h2 className="font-extrabold text-xl pb-3">Appoint Role</h2>
-          <h3 className="font-bold text-base">Role</h3>
+          <h3 className="font-semibold text-sm">Role</h3>
           <div 
             className="flex items-center flex-wrap"
           >
@@ -50,14 +52,15 @@ const AppointRoleForm: React.FC<AppointRoleFormProps> = ({
               Must be owner to appoint manager
             </div>}
           </div>
-          <h3 className="font-bold text-base">Username of user to appoint (all lowercase)</h3>
-          <input value={username} onChange={e => setUsername(e.target.value)} type="text" required className="border border-black bg-gray-200 focus:outline-none" />
+          <h3 className="font-semibold text-sm">Username of user to appoint (all lowercase)</h3>
+          <input value={username} onChange={e => setUsername(e.target.value)} type="text" required className="border w-40 border-gray-400 rounded-md px-2 py-0.5 focus:border-gray-700 bg-gray-200 focus:outline-none" />
           <Button 
             type="submit"
-            className="block mt-2"
-            disabled={!role || isAppointing}
+            className={`mt-2 flex items-center text-gray-500 ${buttonDisabled ? '': 'hover:text-gray-900'}`}
+            disabled={buttonDisabled}
           >
-            Appoint
+            <CgIcons.CgUserAdd className="mx-2" />
+            <span>Appoint</span>
           </Button>
           
         </form>
