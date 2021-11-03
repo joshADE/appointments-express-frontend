@@ -2,15 +2,13 @@ import React from "react";
 import { SkewLoader } from "react-spinners";
 import {
   useGetUsersAndRolesByStoreIdQuery,
-  useUnappointRoleMutation,
 } from "../../../app/services/appointments";
 import DashboardPageHeader from "../../shared/DashboardPageHeader";
-import PersonList from "../../shared/PersonList";
 import Select from "../../shared/Select";
 import AppointRoleForm from "./AppointRoleForm";
 import { useAppSelector } from "../../../app/hooks";
-import * as CgIcons from "react-icons/cg";
 import { useSelectStore } from "../../../hooks/useSelectStore";
+import RoleDetails from "./RoleDetails";
 
 const ManageRole: React.FC = () => {
   const { 
@@ -27,7 +25,7 @@ const ManageRole: React.FC = () => {
   } = useSelectStore(-1);
 
 
-  const [unappoint, { isLoading: isUnappointing }] = useUnappointRoleMutation();
+
 
   const {
     data: usersAndRoles,
@@ -41,8 +39,7 @@ const ManageRole: React.FC = () => {
     }
   );
 
-  const managers = usersAndRoles?.filter(({ role }) => role.name === "Manager");
-  const owner = usersAndRoles?.filter(({ role }) => role.name === "Owner");
+
 
   const currentUser = useAppSelector((state) => state.auth.user);
   const currentRole = selectedStore
@@ -53,18 +50,7 @@ const ManageRole: React.FC = () => {
     : undefined;
   const currentUserIsOwner = currentRole === "Owner";
 
-  const unAppointPerson = async (
-    role: string,
-    storeId: number,
-    username: string
-  ) => {
-    try {
-      await unappoint({ role, storeId, username }).unwrap();
-      alert("Succesfully unappointed");
-    } catch (err) {
-      alert("Failed to perform action");
-    }
-  };
+
 
   return (
     <div className="overflow-y-scroll h-full w-11/12 font-montserrat p-4 relative">
@@ -82,15 +68,7 @@ const ManageRole: React.FC = () => {
           />
         )}
       </div>
-      {isLoadingStores || isLoadingRoles ? (
-        <div className="md:col-span-4 flex justify-center items-center">
-          <SkewLoader
-            color="#333"
-            loading={isLoadingStores || isLoadingRoles}
-            size="36px"
-          />
-        </div>
-      ) : storeError || roleError ? (
+      {storeError || roleError ? (
         <div className="md:col-span-4 row-span-3 text-center bg-green-50 bg-opacity-90 rounded p-5 text-xs text-gray-500 whitespace-pre-wrap">
           Error fetching data from the server:{" "}
           <div className="text-left w-20 mx-auto">
@@ -109,59 +87,22 @@ const ManageRole: React.FC = () => {
           </div>
 
           <div className="md:col-span-2  md:row-span-3 bg-white rounded-lg shadow p-5">
-            <div className="h-full">
-              <h2 className="font-extrabold text-xl pb-3">
-                {selectedStore
-                  ? selectedStore.store.name
-                  : "Select a store to see the roles"}
-              </h2>
-              <h3 className="font-bold text-base">Owner</h3>
-              {selectedStore && owner && <PersonList people={owner} />}
-              <h3 className="font-bold text-base">Managers</h3>
-              {selectedStore && managers && (
-                <PersonList
-                  people={managers}
-                  render={(urs) => (
-                    <div className="border border-white text-white p-1 rounded-sm">
-                      {" "}
-                      {currentUserIsOwner ? (
-                        <button
-                        className="text-sm p-1 hover:bg-white hover:text-black w-full flex items-center"
-                          disabled={isUnappointing}
-                          onClick={() =>
-                            unAppointPerson(
-                              urs.role.name,
-                              urs.store.id,
-                              urs.user.username
-                            )
-                          }
-                        >
-                          
-                          <CgIcons.CgUserRemove className="mr-2" />
-                          <span>Unappoint</span>
-                          
-                        </button>
-                      ) : (
-                        <span>Only owner can unappoint</span>
-                      )}
-                    </div>
-                  )}
-                />
-              )}
-            </div>
+              <RoleDetails
+                usersAndRoles={usersAndRoles}
+                selectedStore={selectedStore}
+                currentUserIsOwner={currentUserIsOwner}
+                isLoading={isLoadingStores || isLoadingRoles}
+              />
           </div>
 
           <div className="md:col-span-2  md:row-span-3 bg-white rounded-lg shadow p-5">
-            {selectedStore ? (
-              <AppointRoleForm
-                selectedStore={selectedStore}
-                currentUserIsOwner={currentUserIsOwner}
-              />
-            ) : (
-              <div className="h-full text-center p-5 text-xs text-gray-500">
-                Must select a store to appoint roles
-              </div>
-            )}
+            
+            <AppointRoleForm
+              selectedStore={selectedStore}
+              currentUserIsOwner={currentUserIsOwner}
+              isLoading={isLoadingStores || isLoadingRoles}
+              isFetching={isFetchingStores || isFetchingRoles}
+            />
           </div>
         </>
       )}

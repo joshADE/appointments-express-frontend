@@ -13,7 +13,7 @@ interface ViewAppointmentsProps {
     url: string;
 }
 
-const className = "border border-gray-200 p-2";
+const className = "border border-gray-300 text-gray-600 p-2";
 
 const ViewAppointments: React.FC<ViewAppointmentsProps> = ({
     url,
@@ -53,15 +53,15 @@ const ViewAppointments: React.FC<ViewAppointmentsProps> = ({
                     If the status is 401 try refreshing the page and relogging
                 </div>:
                 
-                <table className="mx-auto">
+                <table className="mx-auto text-sm">
                     <thead>
                         <tr>
-                            <td className={`${className} font-bold`}>Title</td>
-                            <td className={`${className} font-bold`}>Description</td>
-                            <td className={`${className} font-bold`}>Start</td>
-                            <td className={`${className} font-bold`}>End</td>
-                            <td className={`${className} font-bold`}>Status</td>
-                            <td className={`${className} font-bold`}>Actions</td>
+                            <td className={`${className} font-bold bg-green-50 rounded-l-md pl-4`}>Title</td>
+                            <td className={`${className} font-bold bg-green-50`}>Description</td>
+                            <td className={`${className} font-bold bg-green-50`}>Start</td>
+                            <td className={`${className} font-bold bg-green-50`}>End</td>
+                            <td className={`${className} font-bold bg-green-50`}>Status</td>
+                            <td className={`${className} font-bold bg-green-50 rounded-r-md pr-4`}>Actions</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,7 +74,7 @@ const ViewAppointments: React.FC<ViewAppointmentsProps> = ({
                                     <td className={className}>{moment(app.end, "YYYY-MM-DD[T]HH:mm:ss").format("lll")}</td>
                                     <td className={className}>{AppointmentStatus[app.status]}</td>
                                     <td className={className}>
-                                        <Link to={`${url}/${app.id}`} className="">
+                                        <Link to={`${url}/${app.id}`} className="hover:underline text-green-300 hover:text-green-500">
                                             Details
                                         </Link>
                                     </td>
