@@ -12,6 +12,7 @@ import Login from './components/pages/auth/Login';
 import UnprotectedRoute from './components/pages/auth/UnprotectedRoute';
 import CreateAppointment from './components/pages/createappointment/CreateAppointment';
 import CustomerDashboard from './components/CustomerDashboard';
+import AuthLoadingScreen from './components/pages/auth/AuthLoadingScreen';
 
 const App: React.FC = () => {
   
@@ -26,6 +27,7 @@ const App: React.FC = () => {
           <Route exact path="/">
             <Home isAuthenticated={isAuthenticated} isLoading={isLoading} />
           </Route>
+          {isLoading && <Route path="/" component={AuthLoadingScreen} />}
           <UnprotectedRoute path="/register" isAuthenticated={isAuthenticated} redirectPath="/dashboard">
             <Register isLoading={isLoading} />
           </UnprotectedRoute>
