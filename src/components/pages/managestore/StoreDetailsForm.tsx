@@ -14,6 +14,7 @@ import ClosedDaysTimesList from './ClosedDaysTimesList';
 import { Button } from '../../shared/Button';
 import { Overrides } from './ManageStore';
 import Checkbox from '../../shared/Checkbox';
+import { SkewLoader } from 'react-spinners';
 
 interface StoreDetailsFormProp {
     isQuickProfile: boolean;
@@ -21,6 +22,7 @@ interface StoreDetailsFormProp {
     clearStoreDetails: () => void;
     tranferOverrides: (newOverrides: Overrides) => void;
     overrides?: Overrides; 
+    setLayoutRefresh: React.Dispatch<React.SetStateAction<number>>;
 }
 
 // default values for this components state
@@ -81,7 +83,8 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
     storeDetails,
     clearStoreDetails,
     tranferOverrides,
-    overrides
+    overrides,
+    setLayoutRefresh,
 }) => {
     const [info, setInfo] = useState(storeDetails?storeDetails.store:defaultStoreInfo);
     const [hours, setHours] = useState(storeDetails?convertArrayHoursToObject(storeDetails.storeHours):convertArrayHoursToObject(defaultStoreHours));
@@ -152,11 +155,10 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
     // functions to send updated data to the server
     const handleSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        alert(submitButton);
+        // alert(submitButton);
         if (submitButton === 'createstore'){
-            const requestObject : CreateStoreRequest = { store: info, storeHours: convertObjectHoursToArray(hours), closedDaysTimes: closed };
+            const requestObject : CreateStoreRequest = { store: {...info, isQuickProfile}, storeHours: convertObjectHoursToArray(hours), closedDaysTimes: closed };
             
-            requestObject.store.isQuickProfile = isQuickProfile;
             try {
                 await createStore(requestObject).unwrap();
                 alert("Successfully added store"); 
@@ -286,7 +288,8 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
 
     const addClosed = useCallback(() => {
         setClosed(closed => closed.concat(...defaultClosed));
-    },[]);
+        setLayoutRefresh(r => r + 1);
+    },[setLayoutRefresh]);
 
     const deleteClosed = useCallback((index: number) => {
         if (index < 0 || index >= closed.length)
@@ -298,8 +301,8 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
         }
 
         setClosed(closed => closed.filter((cdt, i) => i !== index));
-        
-    }, [closed]);
+        setLayoutRefresh(r => r + 1);
+    }, [closed, setLayoutRefresh]);
     return (
         <div className="font-montserrat h-full pb-5">
             <form className="w-full h-full flex flex-col md:flex-row" onSubmit={handleSubmit}>
@@ -392,7 +395,14 @@ const StoreDetailsForm: React.FC<StoreDetailsFormProp> = ({
                     disabled={isCreatingStore}
                     className="h-12 bg-green-600 text-white hover:opacity-90"
                     onClick={() => setSubmitButton('createstore')}
-                >Create {isQuickProfile && 'Quick Profile'}</Button>}
+                >
+                    <span>Create {isQuickProfile && 'Quick Profile'}</span> 
+                    <SkewLoader  
+                        color="#fff" 
+                        loading={isCreatingStore} 
+                        size="10px" 
+                    />
+                </Button>}
                 {(isQuickProfile && storeDetails) && 
                 <Button
                     type="button"
