@@ -27,7 +27,6 @@ const initialValues = {
 
 const override = css`
     display: inline-block;
-    top: 4px;
 `;
 
 const Register: React.FC<RegisterProps> = ({ isLoading }) => {

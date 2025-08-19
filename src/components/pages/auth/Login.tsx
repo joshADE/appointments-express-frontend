@@ -20,7 +20,6 @@ const initialValues = {
 
 const override = css`
   display: inline-block;
-  top: 4px;
 `;
 
 const Login: React.FC<LoginProps> = ({ isLoading }) => {
