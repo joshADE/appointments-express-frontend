@@ -25,17 +25,12 @@
     "postcss": "^8.3.5",
     "postcss-cli": "^8.3.1",
     "postcss-preset-env": "^6.7.0",
-    "react": "^17.0.2",
-    "react-datetime": "^3.0.4",
+    "react": "^18.3.1",
     "react-digit-input": "^2.1.0",
-    "react-dom": "^17.0.2",
+    "react-dom": "^18.3.1",
     "react-icons": "^4.2.0",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
-    "react-simple-timefield": "^3.2.3",
-    "react-spinners": "^0.11.0",
-    "react-week-schedulr": "^1.1.0",
     "redux": "^4.1.0",
     "redux-devtools-extension": "^2.13.9",
     "redux-logger": "^3.0.6",
@@ -45,14 +40,9 @@
     "yup": "^0.32.9"
   },
   "scripts": {
-    "start": "run-p watch:css react-scripts:start",
-    "build": "run-s build:css react-scripts:build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "build:css": "cross-env TAILWIND_MODE=build NODE_ENV=production postcss src/styles/tailwind.css -o src/styles/index.css",
-    "watch:css": "cross-env TAILWIND_MODE=watch NODE_ENV=development postcss src/styles/tailwind.css -o src/styles/index.css --watch",
-    "react-scripts:start": "delay 5 && react-scripts start",
-    "react-scripts:build": "react-scripts build"
+    "start": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview"
   },
   "eslintConfig": {
     "extends": "react-app"
