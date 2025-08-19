@@ -20,7 +20,6 @@ const initialValues = {
 
 const override = css`
   display: inline-block;
-  top: 4px;
 `;
 
 const Login: React.FC<LoginProps> = ({ isLoading }) => {
@@ -83,7 +82,7 @@ const Login: React.FC<LoginProps> = ({ isLoading }) => {
                   color="#369952"
                   loading={isLoading || loginLoading}
                   size="24px"
-                  css={override}
+                  // css={override}
                 />
               </div>
             </Button>

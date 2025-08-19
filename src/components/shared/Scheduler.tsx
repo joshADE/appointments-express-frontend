@@ -7,7 +7,8 @@ import {
     Events,
     Hours,
     ClosedDaysTimes,
-    EventContentProps
+    EventContentProps,
+    clamp
 } from 'react-week-schedulr';
 
 interface SchedulerProps {
@@ -98,7 +99,7 @@ const Scheduler: React.FC<SchedulerProps> = ({
             <WeekScheduler 
                 // cellWidth={150}
                 // width="1400px"
-                cellHeight={240}
+                cellHeight={120}
                 height='auto'
                 dynamicEvents={dynamicEvents}
                 onChangeDynamicEvents={onChangeDynamicEvents}
@@ -112,7 +113,8 @@ const Scheduler: React.FC<SchedulerProps> = ({
                 // eventsOverlap
                 maxVerticalPrecision={maxTimeBlock}  // max time in minutes an event can span
                 verticalPrecision={minTimeBlock} // min time in minutes an event can span
-                visualGridVerticalPrecision={120} // grid incriments in minutes
+                visualGridVerticalPrecision={clamp(minTimeBlock * 2, 30, 60)} // grid incriments in minutes
+                showVerticalPrecisionMarkers
                 originDate={originDay}
                 onEventClick={onEventClick}
                 eventRootComponent={eventRootComponent}

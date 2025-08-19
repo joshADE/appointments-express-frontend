@@ -5,7 +5,7 @@ const AboutSection = React.forwardRef((props, ref: Ref<HTMLDivElement>) => {
     console.log("rerendered about")
         return (
             <section id="about" className="font-roboto">
-                <div ref={ref} className="py-20 mx-auto container px-10 overflow-hidden rounded-2xl bg-gradient-to-b from-greenfade">
+                <div ref={ref} className="py-20 mx-auto container px-10 overflow-hidden rounded-2xl bg-linear-to-b from-greenfade">
                     <h3 className="text-green-500 text-center font-semibold text-sm">About</h3>
                     <h2 className="text-center font-black font-open-sans text-gray-900 text-4xl">What does the app do?</h2>
                     <h2 className="text-center font-black font-open-sans text-gray-900 text-4xl">And what is it for?</h2>
