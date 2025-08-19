@@ -1,1 +1,1 @@
-export const baseUrl = 'https://appointments-express.herokuapp.com/api';
+export const baseUrl = import.meta.env.VITE_API_URL || "https://localhost:44371/api";

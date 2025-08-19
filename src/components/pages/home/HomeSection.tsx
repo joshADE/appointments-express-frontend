@@ -84,7 +84,7 @@ const HomeSection = React.forwardRef((props, ref: Ref<HTMLDivElement>) => {
                         >Find me a store</Button>
                     </div>
                 </div>
-                <div className="relative lg:w-1/2 min-h-full z-0 hidden lg:block rounded-2xl py-20 lg:py-36 bg-gradient-to-b from-greenfade">
+                <div className="relative lg:w-1/2 min-h-full z-0 hidden lg:block rounded-2xl py-20 lg:py-36 bg-linear-to-b from-greenfade">
                     <div className="absolute top-20 left-20 h-96 w-96 rounded-full border-2 border-dashed border-gray-500">
                         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-80 w-80 rounded-full border-2 border-gray-500" />
                     </div>

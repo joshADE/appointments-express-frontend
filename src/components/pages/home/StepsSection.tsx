@@ -4,7 +4,7 @@ const StepsSection = React.forwardRef((props, ref: Ref<HTMLDivElement>) => {
     console.log("rerendered steps")
         return (
             <section id="steps" className="font-open-sans text-gray-900">
-                <div ref={ref} className="py-20 mx-auto container px-10 overflow-hidden rounded-2xl bg-gradient-to-b from-greenfade">
+                <div ref={ref} className="py-20 mx-auto container px-10 overflow-hidden rounded-2xl bg-linear-to-b from-greenfade">
                     <h3 className="text-green-500 text-center font-semibold text-sm font-roboto">Steps</h3>
                     <h2 className="text-center font-extrabold text-4xl">How do you use the app?</h2>
                     <div className="flex flex-col md:flex-row mt-20 justify-around">
