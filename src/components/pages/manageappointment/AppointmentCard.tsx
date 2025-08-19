@@ -56,6 +56,7 @@ export default memo(AppointmentCard);
 interface StatusOptionButtonProps {
     onClick?: () => void;
     className?: string;
+    children: React.ReactNode;
 }
 
 const StatusOptionButton: React.FC<StatusOptionButtonProps> = ({

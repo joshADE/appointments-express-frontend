@@ -82,7 +82,7 @@ const Login: React.FC<LoginProps> = ({ isLoading }) => {
                   color="#369952"
                   loading={isLoading || loginLoading}
                   size="24px"
-                  css={override}
+                  // css={override}
                 />
               </div>
             </Button>

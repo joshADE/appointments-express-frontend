@@ -166,7 +166,7 @@ const Register: React.FC<RegisterProps> = ({ isLoading }) => {
                     color="#369952"
                     loading={isLoading || allUsersFetching || registerLoading || loginLoading}
                     size="24px"
-                    css={override}
+                    // css={override}
                   />
                 </div>
               </Button>

@@ -193,16 +193,16 @@ const ManageAccount: React.FC = () => {
                     props={{
                       name: "firstName",
                       type: "text",
-                      placeholder: user.firstName,
                     }}
+                    placeholder={user.firstName}
                   />
                   <FormTextInput
                     label="New Last Name"
                     props={{
                       name: "lastName",
                       type: "text",
-                      placeholder: user.lastName,
                     }}
+                    placeholder={user.lastName}
                   />
                   <FormTextInput
                     label="New Password"

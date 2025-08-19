@@ -7,6 +7,7 @@ interface ButtonProps {
     className?: string;
     outline?: boolean;
     bare?: boolean;
+    children: React.ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({

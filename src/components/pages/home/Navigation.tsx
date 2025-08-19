@@ -83,7 +83,7 @@ const Navigation: React.FC<NavigationProps> = ({
               color="#333"
               loading={isLoading}
               size="24px"
-              css={override}
+              // css={override}
             />
           ) : isAuthenticated ? (
             <>
